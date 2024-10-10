@@ -1,0 +1,70 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.MemberServiceImpl;
+import kr.or.ddit.service.iMemberService;
+import kr.or.ddit.vo.ManageVo;
+import kr.or.ddit.vo.MemberVo;
+
+@WebServlet("/updateManager.do")
+public class updateManagerController extends HttpServlet {
+	iMemberService memberService = MemberServiceImpl.getInstance();
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	    String memId = req.getParameter("memId");
+	    int memNo = Integer.parseInt(req.getParameter("memNo"));
+//	    String spotCode = req.getParameter("spotCode");
+	    MemberVo existingMember = memberService.selectByNo(memNo);
+
+	    ManageVo manage = new ManageVo();
+	    manage.setMemNo(memNo);
+//	    manage.setSpotCode(spotCode);
+	    
+	    String memPw = req.getParameter("memPw");
+	    if (memPw == null || memPw.isEmpty()) {
+	        memPw = existingMember.getMemPw(); // 기존 비밀번호 사용
+	    }
+
+	    String memName = req.getParameter("memName");
+	    String memMail = req.getParameter("memMail");
+	    String memPhone = req.getParameter("memPhone");
+	    String memBirth = req.getParameter("memBirth");
+
+	    if (memBirth == null || memBirth.isEmpty()) {
+	        memBirth = existingMember.getMemBirth(); // 기존 생년월일 사용
+	    }
+	    
+	    String[] parts = memBirth.split("-");
+	    if (parts.length == 3) {
+	        // YY/MM/DD 형식으로 변환 (예: 2023-10-05 → 23/10/05)
+	    	memBirth = parts[0].substring(2) + "/" + parts[1] + "/" + parts[2];
+	    	memBirth=memBirth.split(" ")[0];
+	    }
+	    System.out.println(memBirth);
+
+	    String memGender = req.getParameter("memGender");
+
+	    MemberVo member = new MemberVo();
+	    member.setMemNo(memNo);
+	    member.setMemId(memId);
+	    member.setMemPw(memPw);
+	    member.setMemName(memName);
+	    member.setMemMail(memMail);
+	    member.setMemPhone(memPhone);
+	    member.setMemBirth(memBirth);
+	    member.setMemGender(memGender);
+
+	    memberService.updateManager(member);
+//	    memberService.updateMng(manage);
+	    System.out.println(member);
+
+	    resp.sendRedirect(req.getContextPath() + "/mypage.do");
+	}
+
+}

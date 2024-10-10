@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.ddit.mapper.MovieScheduleMapper">
+
+	<!-- MovieScheduleVO와 테이블 컬럼 간 매핑 -->
+	<resultMap id="movieScheduleResultMap"
+		type="kr.or.ddit.vo.MovieScheduleVO">
+		<result property="scheduleId" column="schedule_id" />
+		<result property="movieId" column="movie_id" />
+		<result property="screeningTime" column="screening_time" />
+		<result property="screenId" column="screen_id" />
+		<result property="seatAvailable" column="seat_available" />
+	</resultMap>
+
+	<!-- 영화 스케줄 조회 -->
+	<select id="selectMovieScheduleById" parameterType="String"
+		resultMap="movieScheduleResultMap">
+		SELECT * FROM movie_schedule WHERE schedule_id =
+		#{scheduleId}
+	</select>
+
+	<!-- 모든 영화 스케줄 조회 -->
+	<select id="getAllMovieSchedules"
+		resultMap="movieScheduleResultMap">
+		SELECT * FROM movie_schedule
+	</select>
+
+	<!-- 영화 스케줄 추가 -->
+	<insert id="insertMovieSchedule"
+		parameterType="kr.or.ddit.vo.MovieScheduleVO">
+		INSERT INTO movie_schedule (schedule_id, movie_id,
+		screening_time,
+		screen_id, seat_available)
+		VALUES (#{scheduleId},
+		#{movieId}, #{screeningTime}, #{screenId},
+		#{seatAvailable})
+	</insert>
+
+	<!-- 영화 스케줄 수정 -->
+	<update id="updateMovieSchedule"
+		parameterType="kr.or.ddit.vo.MovieScheduleVO">
+		UPDATE movie_schedule
+		SET movie_id = #{movieId},
+		screening_time = #{screeningTime}, screen_id =
+		#{screenId},
+		seat_available = #{seatAvailable}
+		WHERE schedule_id = #{scheduleId}
+	</update>
+
+	<!-- 영화 스케줄 삭제 -->
+	<delete id="deleteMovieSchedule" parameterType="String">
+		DELETE FROM
+		movie_schedule WHERE schedule_id = #{scheduleId}
+	</delete>
+
+</mapper>

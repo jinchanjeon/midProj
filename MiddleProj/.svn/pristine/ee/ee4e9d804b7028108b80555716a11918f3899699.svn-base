@@ -1,0 +1,47 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.MovieServiceImpl;
+import kr.or.ddit.service.iMovieService;
+import kr.or.ddit.vo.GenreVo;
+import kr.or.ddit.vo.MovieVo;
+
+@WebServlet("/movieList.do")
+public class MovieListController extends HttpServlet {
+    iMovieService movieService = MovieServiceImpl.getInstance();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            // 장르 번호 가져오기
+            String genNo = req.getParameter("genNo");
+            List<MovieVo> movieList;
+
+            // 장르 번호에 따른 영화 목록 조회
+            if (genNo != null && !genNo.isEmpty()) {
+                movieList = movieService.getMoviesByGenre(genNo); // 장르에 따라 영화 조회하는 메서드
+            } else {
+                movieList = movieService.movieList100(); // 기본 영화 목록
+            }
+
+            req.setAttribute("movieList", movieList);
+
+            // 장르 목록 가져오기
+            List<GenreVo> genList = movieService.selectAllGen();
+            req.setAttribute("genList", genList);
+
+            req.getRequestDispatcher("/WEB-INF/view/movieList.jsp").forward(req, resp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("errorMessage", "An error occurred while fetching the movie list.");
+            req.getRequestDispatcher("/WEB-INF/view/error.jsp").forward(req, resp);
+        }
+    }
+}

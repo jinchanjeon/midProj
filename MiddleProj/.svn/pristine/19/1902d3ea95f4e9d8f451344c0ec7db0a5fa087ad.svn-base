@@ -1,0 +1,15 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ReservationVo;
+
+public interface iSeatDao {
+	
+	
+	List<ReservationVo> getSeat(String schNo);//schNo로 좌석 조회
+//	void saveSeats(List<String> seatIds, String schNo); // 선택한 좌석을 스케줄 번호로 저장
+    void saveSeats(List<ReservationVo> reservations); // 예약을 ReservationVo 리스트로 받도록 변경
+	
+
+}

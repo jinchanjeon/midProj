@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mypurchase">
+	<resultMap type="MypurchaseVO" id="mypurchaseVO"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="memNo" column="mem_no" />
+		<result property="productName" column="product_name" />
+		<result property="orderPrice" column="order_price" />
+		<result property="ordDate" column="ord_date" />
+		<result property="orderCnt" column="order_Cnt" />
+	</resultMap>
+
+	<select id="getmy" resultMap="mypurchaseVO" parameterType="String">
+		SELECT * FROM BUYPRODUCT 
+		WHERE MEM_NO = '${memNo}'
+	</select>
+
+	
+</mapper>

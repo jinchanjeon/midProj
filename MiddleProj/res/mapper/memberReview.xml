@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberReview">
+	<resultMap type="MemberReview" id="memberReview"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="movieName" column="movie_name" />
+		<result property="reviewContent" column="review_content" />
+		<result property="reviewDate" column="review_date" />
+		<result property="reviewStar" column="review_star" />
+		<result property="memNo" column="mem_no" />
+		<result property="memId" column="me_id" />
+		<result property="movieNo" column="movie_no" />
+		<result property="reviewState" column="review_state" />
+	</resultMap>
+	
+		<select id="myreview" resultMap="memberReview"
+		parameterType="String">
+		SELECT * FROM MEMBER_REVIEW WHERE MEM_NO ='${memNo}'
+		
+	</select>
+
+
+	
+</mapper>

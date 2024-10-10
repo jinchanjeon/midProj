@@ -1,0 +1,68 @@
+package kr.or.ddit.dao;
+
+import kr.or.ddit.mybatis.MyBatisDao;
+import kr.or.ddit.vo.MemberVo;
+
+public class MemberDaoImpl  extends MyBatisDao implements iMemberDao{
+
+	private static MemberDaoImpl instance;
+
+	private MemberDaoImpl() {
+
+	}
+
+	public static MemberDaoImpl getInstance() {
+		if (instance == null) {
+			instance = new MemberDaoImpl();
+
+		}
+		return instance;
+	}
+
+	@Override
+	public MemberVo login(MemberVo member) {
+
+		return selectOne("member.login", member);
+	}
+
+	@Override
+	public int join(MemberVo member) {
+
+		return insert("member.join",member);
+	}
+
+	@Override
+	public MemberVo findId(MemberVo memberVo) {
+		return selectOne("member.findId", memberVo);
+	}
+
+	@Override
+	public int selectMemNo(String memId) {
+		return selectOne("member.selectMemNo",memId);
+	}
+
+	@Override
+	public MemberVo findPw(MemberVo memberVo) {
+		
+		return selectOne("member.findPw", memberVo);
+	}
+
+	@Override
+	public int update(MemberVo member) {
+		return update("member.update",member);
+	}
+
+	@Override
+	public boolean pwCorrect(String memId, String inputPw) {
+		String result = selectOne("member.pwCorrect",memId);
+		return result != null && result.equals(inputPw);
+	}
+
+	@Override
+	public int withdraw(MemberVo member) {
+		return update("member.withdraw",member);
+	}
+
+	
+}
+

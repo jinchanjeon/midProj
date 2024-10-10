@@ -1,0 +1,40 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.MovieVo;
+import kr.or.ddit.vo.ReservationVo;
+
+public interface iReservationService {
+	
+	/**
+	 * 전체 지역 리스트 출력
+	 * @return
+	 */
+	public List<String> selectAllRegions(); // 전체 지역 조회 메서드 추가
+
+	/**
+	 * 영화별 지역 리스트 출력
+	 * 
+	 * @param movieNo
+	 * @return
+	 */
+	public List<ReservationVo> selectRegionByMovie(String movieNo);
+
+	/**
+	 * 지역별 극장 리스트 출력
+	 * 
+	 * @param regNo
+	 * @return
+	 */
+	public List<ReservationVo> selectSpotByReg(String regNo);
+
+	/**
+	 * 스케줄별 좌석 리스트 출력
+	 * 
+	 * @param schNo
+	 * @return
+	 */
+	public List<ReservationVo> selectSeatsBySch(String schNo);
+
+}

@@ -1,0 +1,13 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.StoreVo;
+
+public interface iStoreService {
+    List<StoreVo> getAllProducts();
+    StoreVo getProductById(String productId);
+    void addProduct(StoreVo product);
+    void updateProduct(StoreVo product);
+    void deleteProduct(String productId);
+}

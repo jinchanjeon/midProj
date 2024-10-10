@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.dao.ScheduleMapper">
+
+    <select id="getSchedules" resultType="ScheduleVO">
+		   SELECT 
+        MR.ROOM_NAME,
+        COUNT(RS.SEAT_NO) AS TOTAL_SEATS,
+        TO_CHAR(S.MOVIE_START, 'HH24:MI') AS MOVIE_START_TIME,
+        TO_CHAR(S.MOVIE_START + NUMTODSINTERVAL(M.MOVIE_RUNNINGTIME, 'MINUTE'), 'HH24:MI') AS MOVIE_END_TIME,
+        COUNT(CASE WHEN RS.SOLDOUT = '1' THEN 1 END) AS SOLD_OUT_SEATS
+    FROM 
+        SCHEDULE S
+    JOIN 
+        MOVIE_ROOM MR ON S.ROOM_NUM = MR.ROOM_NUM
+    LEFT JOIN 
+        RESERVED_SEAT RS ON S.SCH_NO = RS.SCH_NO
+    JOIN 
+        MOVIE M ON S.MOVIE_NO = M.MOVIE_NO
+    JOIN 
+        SPOT SP ON MR.SPOT_CODE = SP.SPOT_CODE
+    WHERE 
+        S.MOVIE_NO = #{movieNo}
+        AND S.SCH_DATE = #{schDate}
+        AND SP.SPOT_CODE = #{spotCode}
+    GROUP BY 
+        MR.ROOM_NAME, S.MOVIE_START, M.MOVIE_RUNNINGTIME
+
+    </select>
+</mapper>

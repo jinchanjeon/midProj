@@ -1,0 +1,53 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+
+import kr.or.ddit.service.SeatServiceImpl;
+import kr.or.ddit.vo.ReservationVo;
+
+public class SeatController extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    private SeatServiceImpl seatService;
+
+    @Override
+    public void init() throws ServletException {
+        seatService = SeatServiceImpl.getInstance(); // 서비스 인스턴스 가져오기
+    }
+
+    // 좌석 조회
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String schNo = request.getParameter("schNo"); // 스케줄 번호 가져오기
+        List<ReservationVo> seats = seatService.getSeats(schNo); // 좌석 조회
+
+        request.setAttribute("seats", seats); // 좌석 정보를 JSP로 전달
+        request.getRequestDispatcher("/WEB-INF/views/seatList.jsp").forward(request, response); // JSP로 포워딩
+    }
+
+    // 좌석 예약
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // 예약 정보 가져오기 (여기서는 예시로 간단하게 처리)
+        String seatNo = request.getParameter("seatNo");
+        String schNo = request.getParameter("schNo");
+        List<ReservationVo> reservations = new ArrayList<>();
+        
+        // 예약 정보를 ReservationVo 객체로 변환 (여기서 seatNo만 사용)
+        ReservationVo reservation = new ReservationVo();
+        reservation.setSeatNo(seatNo);
+        reservation.setSchNo(schNo);
+        reservations.add(reservation);
+        
+        // 좌석 예약
+        seatService.reserveSeats(reservations);
+        
+        // 예약 후 결제 페이지로 이동
+        response.sendRedirect(request.getContextPath() + "/reservationSuccess.jsp");
+    }
+}

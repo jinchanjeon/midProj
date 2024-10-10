@@ -1,0 +1,40 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <script src="https://cdn.ckeditor.com/ckeditor5/29.1.0/classic/ckeditor.js"></script>
+    <title>Submit Event</title>
+
+<style>
+.ck.ck-editor {
+    max-width: 500px;
+}
+.ck-editor__editable {
+    min-height: 300px;
+}
+
+   </style>
+</head>
+<body>
+
+     <form action="/MiddleProj/eventInsert" method="post" enctype="multipart/form-data">
+         <label for="title">Title:</label>
+         <input type="text" id="title" name="title">
+ 
+         <textarea id="content" name="content"></textarea>
+    <input type="file" id="attachedFiles" name="attachedFiles">
+ 
+         <button type="submit">Submit</button>
+
+     <script>
+         ClassicEditor
+             .create(document.querySelector('#content'))
+             .catch(error => {
+                 console.error(error);
+             });
+         
+         
+
+     </script>
+    
+</body>

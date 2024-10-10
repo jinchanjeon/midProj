@@ -1,0 +1,74 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.EventServiceImpl;
+import kr.or.ddit.service.iEventService;
+import kr.or.ddit.vo.EventVo;
+@WebServlet("/eventInsert")
+public class EventInsertController extends HttpServlet{
+
+	iEventService eventService = EventServiceImpl.getInstance();
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String boardNo = req.getParameter("boardNo");
+//		
+		EventVo event = eventService.eventDetail(boardNo);
+//		
+		req.setAttribute("event", event);
+		
+		req.getRequestDispatcher("WEB-INF/view/eventInsert.jsp").forward(req, resp);
+				
+	
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+//	    // 1. 요청 파라미터에서 값 추출
+	    String title = req.getParameter("title");
+	    String content = req.getParameter("content");
+	    String img = req.getParameter("img");
+	    String boardStart = req.getParameter("boardStart");
+	    String boardEnd = req.getParameter("boardEnd");
+	    String memNo = req.getParameter("memNo");
+//	    
+//	    // 2. boardVo 객체 생성 및 값 설정
+//	    EventVo event = new EventVo();
+//	    event.setBoardNo(boardNo);
+//	    event.setBoardTitle(title);
+//	    event.setBoardContent(content);
+//	    
+//	    // 3. 서비스 호출을 통한 업데이트 처리
+//	    eventService.boardUpdate(boardNo);
+//	    
+//	    // 4. 리다이렉트로 목록 페이지로 이동
+//	    resp.sendRedirect(req.getContextPath() + "/boardList");
+		
+//	    String title = req.getParameter("title");
+//	    String content = req.getParameter("content");
+	    String imgPath = "../../resources/boogie/edu-meeting/assets/images/";
+	    EventVo event = new EventVo();
+	    event.setBoardTitle(title);
+	    event.setBoardContent(content);
+	    event.setBoardImg(imgPath + img);
+	    event.setBoardStart("2024.04.10");
+	    event.setBoardEnd("2024.10.03");
+	    event.setMemNo(2);
+
+	    eventService.eventInsert(event);
+
+	    resp.sendRedirect(req.getContextPath() + "/eventList");
+		
+	
+	
+	}
+
+
+}

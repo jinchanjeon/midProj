@@ -1,0 +1,9 @@
+package kr.or.ddit.controller;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+
+@WebServlet("/updateMovie.do")
+public class udpateMovieController extends HttpServlet {
+
+}

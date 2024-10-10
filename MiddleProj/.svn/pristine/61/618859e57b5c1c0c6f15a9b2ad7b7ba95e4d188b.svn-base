@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="payment">
+	<resultMap type="ProdVo" id="ProdVo"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="prodNo" column="prod_no" />
+		<result property="prodName" column="prod_name" />
+		<result property="prodPrice" column="prod_price" />
+		<result property="prodImg" column="prod_img" />
+		<result property="prodContent" column="prod_content" />
+		<result property="prodCateCodeNo" column="prod_cate_code_no" />
+	</resultMap>
+
+
+	<resultMap type="ProdOrderVo" id="ProdOrderVo"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="orderNo" column="order_no" />
+		<result property="ordDate" column="ord_date" />
+		<result property="orderPrice" column="order_price" />
+		<result property="memNo" column="mem_no" />
+	</resultMap>
+
+	<resultMap type="ProdPayVo" id="ProdPayVo"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="prodPayNo" column="prod_pay_no" />
+		<result property="paymethodNo" column="paymethod_no" />
+		<result property="prodPayPrice" column="prod_pay_price" />
+		<result property="prodPayState" column="prod_pay_state" />
+		<result property="prodPayCreated" column="prod_pay_created" />
+		<result property="orderNo" column="order_no" />
+	</resultMap>
+	
+	<resultMap type="ProdCartVo" id="ProdCartVo"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="cartNo" column="cart_no" />
+		<result property="prodNo" column="prod_no" />
+		<result property="cartCnt" column="cart_cnt" />
+		<result property="cartState" column="cart_state" />
+		<result property="memNo" column="mem_no" />
+	</resultMap>
+
+
+	<select id="selectProdList" resultMap="ProdVo"
+		parameterType="int">
+		SELECT *
+		FROM PROD
+		WHERE PROD_NO = #{prodNo}
+	</select>
+
+	<insert id="insertOrder" parameterType="ProdOrderVo">
+		INSERT INTO PROD_ORDER
+		(ORDER_NO, ORD_DATE, ORDER_PRICE, MEM_NO)
+		VALUES (#{orderNo}, SYSDATE,
+		#{orderPrice}, #{memNo})
+	</insert>
+
+
+	<insert id="insertPayment" parameterType="ProdPayVo">
+		INSERT INTO PROD_PAY
+		(PROD_PAY_NO, PAYMETHOD_NO, PROD_PAY_PRICE,
+		PROD_PAY_STATE,
+		PROD_PAY_CREATED, ORDER_NO)
+		VALUES (#{prodPayNo}, #{payMethodNo},
+		#{prodPayPrice}, #{prodPayState},
+		SYSDATE, #{orderNo})
+	</insert>
+
+	<select id="selectCartItems" parameterType = "int" resultType="ProdCartVo">
+	
+		SELECT
+		CART_NO, PROD_NO,
+		CART_CNT, CART_STATE, MEM_NO
+		FROM
+		PROD_CART
+		WHERE
+		MEM_NO = #{memNo}
+	</select>
+
+	<select id="selectProdByCategory" parameterType="int" resultType="ProdVo">
+		SELECT
+		PROD_NO, PROD_NAME, PROD_PRICE, PROD_IMG
+		FROM
+		PROD
+		WHERE
+		PROD_CATE_CODE_NO = #{cateCodeNo}
+	</select>
+
+
+
+</mapper>

@@ -1,0 +1,122 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="store">
+
+	<resultMap type="StoreVo" id="StoreVo">
+	    <result property="product_id" column="product_id" />
+	    <result property="store_id" column="store_id" />
+	    <result property="product_name" column="product_name" />
+	    <result property="price" column="price" />
+	    <result property="stock" column="stock" />
+	    <result property="imgUrl" column="img_url" />
+	    <result property="category_id" column="category_id" />
+	    <result property="category_name" column="category_name" />
+	    
+	    <result property="cart_id" column="cart_id" />
+		<result property="mem_no" column="mem_no" />
+		<result property="quantity" column="quantity" />
+		<result property="added_date" column="added_date" />
+	</resultMap>
+	
+	<select id="getAllProducts" resultMap="StoreVo">
+    SELECT 
+        p.product_id, p.store_id, p.product_name, p.price, p.stock, p.img_url,
+        c.category_id, c.category_name
+    FROM 
+        product p
+    LEFT JOIN 
+        product_category c ON p.category_id = c.category_id
+</select>
+	
+	<select id="getProductById" parameterType="string" resultMap="StoreVo">
+	    SELECT p.*, c.CATEGORY_NAME
+	    FROM PRODUCT p
+	    JOIN PRODUCT_CATEGORY c ON p.CATEGORY_ID = c.CATEGORY_ID
+	    WHERE p.PRODUCT_ID = #{productId}
+	</select>
+	
+	<insert id="addProduct" parameterType="StoreVo">
+	    INSERT INTO PRODUCT (PRODUCT_ID, STORE_ID, PRODUCT_NAME, PRICE, STOCK, CATEGORY_ID)
+	    VALUES (#{productId}, #{storeId}, #{productName}, #{price}, #{stock}, #{categoryId})
+	</insert>
+	
+	<update id="updateProduct" parameterType="StoreVo">
+	    UPDATE PRODUCT
+	    SET STORE_ID = #{storeId}, PRODUCT_NAME = #{productName}, PRICE = #{price}, 
+	        STOCK = #{stock}, CATEGORY_ID = #{categoryId}
+	    WHERE PRODUCT_ID = #{productId}
+	</update>
+	
+	<delete id="deleteProduct" parameterType="string">
+	    DELETE FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+	</delete>
+	
+	<!--장바구니 -->
+	<select id="getCartItems" resultMap="StoreVo" parameterType="int">
+    SELECT 
+        pc.CART_ID,
+        pc.MEM_NO,
+        m.MEM_NAME,
+        p.PRODUCT_ID, 
+        p.STORE_ID, 
+        p.PRODUCT_NAME, 
+        p.PRICE, 
+        pc.QUANTITY,
+        pc.ADDED_DATE,
+        c.CATEGORY_ID,
+        c.CATEGORY_NAME
+    FROM 
+        PRODUCT_CART pc
+    JOIN 
+        PRODUCT p ON pc.PRODUCT_ID = p.PRODUCT_ID
+    LEFT JOIN 
+        PRODUCT_CATEGORY c ON p.CATEGORY_ID = c.CATEGORY_ID
+    JOIN
+        MEMBER m ON pc.MEM_NO = m.MEM_NO
+    WHERE 
+        pc.MEM_NO = #{memNo}
+    </select>
+
+    <insert id="addToCart" parameterType="StoreVo">
+    MERGE INTO PRODUCT_CART pc
+    USING (SELECT #{mem_no} as mem_no, #{product_id} as product_id FROM DUAL) src
+    ON (pc.MEM_NO = src.mem_no AND pc.PRODUCT_ID = src.product_id)
+    WHEN MATCHED THEN
+        UPDATE SET pc.QUANTITY = pc.QUANTITY + #{quantity},
+                   pc.ADDED_DATE = SYSDATE
+    WHEN NOT MATCHED THEN
+        INSERT (CART_ID, MEM_NO, PRODUCT_ID, QUANTITY, ADDED_DATE)
+        VALUES ((SELECT NVL(MAX(CART_ID), 0) + 1 FROM PRODUCT_CART), 
+                src.mem_no, src.product_id, #{quantity}, SYSDATE)
+</insert>
+
+    <update id="updateCartItemQuantity" parameterType="StoreVo">
+        UPDATE PRODUCT_CART
+        SET QUANTITY = #{quantity}
+        WHERE CART_ID = #{cart_id}
+    </update>
+
+    <delete id="removeFromCart" parameterType="int">
+        DELETE FROM PRODUCT_CART 
+        WHERE CART_ID = #{cartId}
+    </delete>
+
+<select id="getProductsByCategory" parameterType="string" resultMap="StoreVo">
+    SELECT 
+        p.product_id, p.store_id, p.product_name, p.price, p.stock, p.img_url,
+        c.category_id, c.category_name
+    FROM 
+        product p
+    LEFT JOIN 
+        product_category c ON p.category_id = c.category_id
+    WHERE 
+        p.category_id = #{categoryId}
+</select>
+
+<select id="getAllCategories" resultType="map">
+    SELECT 
+        category_id,
+        category_name
+    FROM 
+        product_category
+</select>
+</mapper>

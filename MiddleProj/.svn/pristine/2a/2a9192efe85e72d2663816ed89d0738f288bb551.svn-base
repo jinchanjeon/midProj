@@ -1,0 +1,91 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ActorVo;
+import kr.or.ddit.vo.BoxofficeVo;
+import kr.or.ddit.vo.DirectorVo;
+import kr.or.ddit.vo.GenreVo;
+import kr.or.ddit.vo.MovGenVo;
+import kr.or.ddit.vo.MovieActorVo;
+import kr.or.ddit.vo.MovieDirectorVo;
+import kr.or.ddit.vo.MovieVo;
+
+public interface iMovieService {
+	
+	/**
+	 * ��ȭ ����Ʈ ���
+	 * @return
+	 */
+	public List<MovieVo> movieList();
+	public List<MovieVo> movieList100(MovieVo paging);
+	
+	/**
+	 * ��ȭ ���� db ����
+	 * @param movie
+	 * @return
+	 */
+	public int insertMovie(MovieVo movieVo);
+	
+	
+	/**
+	 * Ư�� ��ȭ �ִ��� ��ȸ
+	 * @param movieCode
+	 * @return
+	 */
+	public MovieVo getMovie(MovieVo movieNo);
+	
+	/**
+	 * ��ȭ �̸����� ��ȸ
+	 * @param movieName
+	 * @return
+	 */
+	public List<MovieVo> getMovieName(MovieVo movieName);
+	
+	/**
+	 * �ڽ����ǽ� insert
+	 * @param boxVo
+	 * @return
+	 */
+	public int insertBox(BoxofficeVo boxVo);
+	
+	
+	/**
+	 * kmdb�� �ִ��� Ȯ��
+	 * @param movie
+	 * @return
+	 */
+	public MovieVo getMovieNameRelease(MovieVo movie);
+	
+	/**
+	 * �ڽ����ǽ� ���
+	 * @return
+	 */
+	public List<BoxofficeVo> boxList();
+	
+	
+	public List<MovieVo> boxInfo();
+	
+	public BoxofficeVo boxOfficeExists(String string);
+	
+	public Integer selectGenre(String genreNm);
+	
+	public void insertGenre(String gen);
+	public void insertMovGen(MovGenVo MG);
+	public void insertDir(DirectorVo dir);
+	public void insertMovDir(MovieDirectorVo mdvo);
+	public DirectorVo selectDir(int dir);
+	public MovGenVo getMovGen(MovGenVo mg);
+	public MovieDirectorVo getMovDir(MovieDirectorVo md);
+	
+	public void insertAct(ActorVo act);
+	public void insertMovAct(MovieActorVo mavo);
+	public ActorVo selectAct(int act);
+	public MovieActorVo getMovAct(MovieActorVo ma);
+	public List<GenreVo> selectAllGen();
+	public List<MovieVo> getMoviesByGenre(MovieVo pageger);
+	public List<GenreVo> selectGenFromMovNo(String movNo);
+	public List<ActorVo> selectActFromMovNo(String movNo);
+	public List<DirectorVo> selectDirFromMovNo(String movNo);
+	
+}

@@ -1,0 +1,23 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+
+import kr.or.ddit.vo.SalesVO;
+
+public interface SalesDAO {
+
+    // 매출 추가
+    void insertSale(SalesVO sale);
+
+    // 매출 수정
+    void updateSale(SalesVO sale);
+
+    // 매출 삭제
+    void deleteSale(String saleId);
+
+    // 특정 매출 조회
+    SalesVO selectSaleById(String saleId);
+
+    // 모든 매출 조회
+    List<SalesVO> getAllSales();
+}

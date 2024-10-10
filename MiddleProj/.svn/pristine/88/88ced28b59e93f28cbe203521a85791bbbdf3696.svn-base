@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="review">
+	<resultMap type="ReviewVO" id="reviewMap">
+		<result property="reviewCode" column="review_code" />
+		<result property="reviewLike" column="review_like" />
+		<result property="reviewContent" column="review_content" />
+		<result property="reviewDate" column="review_date" />
+		<result property="memNo" column="mem_no" />
+		<result property="movieNo" column="movie_no" />
+		<result property="reviewStar" column="review_star" />
+		<result property="memId" column="mem_id" />
+		<result property="movieName" column="movie_name" />
+		<result property="reviewState" column="review_state" />
+		<result property="reviewAvg" column="review_avg" />
+	</resultMap>
+
+
+	<select id="reviewList" parameterType="String"
+		resultMap="reviewMap">
+		select mem.mem_id, mov.movie_name, rev.review_like,
+		rev.review_state, rev.review_code, rev.review_content,
+		rev.review_date, rev.review_star
+		from review rev , member mem, movie
+		mov
+		where mem.mem_no=rev.mem_no
+		and mov.movie_no=rev.movie_no
+		and
+		rev.movie_no=#{movieNo}
+		and review_state=1
+		order by review_date desc
+	</select>
+
+	<insert id="insertReview" parameterType="ReviewVO">
+		insert into
+		review
+		(REVIEW_CODE, REVIEW_LIKE, REVIEW_CONTENT, REVIEW_DATE,
+		MEM_NO,
+		MOVIE_NO, REVIEW_STAR, REVIEW_STATE)
+		values((select
+		nvl(max(review_code),0)+1 from review),0,
+		#{reviewContent}, sysdate,
+		#{memNo}, #{movieNo}, #{reviewStar},1)
+
+	</insert>
+
+	<update id="updateReview" parameterType="ReviewVO">
+		update review
+		set
+		review_content= #{reviewContent}, review_date=sysdate,
+		review_star=#{reviewStar}
+		where review_code=#{reviewCode}
+	</update>
+
+	<update id="deleteReview" parameterType="String">
+		update review
+		set
+		review_state = 2
+		where review_code=#{reviewCode}
+	</update>
+
+	<select id="selectToUpdateReview" parameterType="ReviewVO"
+		resultMap="reviewMap">
+		select rev.* , mem.mem_id, mov.movie_name
+		from review rev,
+		member mem, movie mov
+		where rev.mem_no=mem.mem_no
+		and
+		rev.movie_no=mov.movie_no
+		and rev.mem_no=#{memNo}
+		and
+		rev.movie_no=#{movieNo}
+	</select>
+
+	<select id="selectReview" parameterType="String"
+		resultMap="reviewMap">
+		select * from review where review_code=#{reviewCode}
+	</select>
+
+	<select id="reviewAVG" parameterType="String" resultType="float">
+		select round( avg(r.review_star),1) as reviewAvg from review r, movie m
+		where r.movie_no=m.movie_no
+		and m.movie_no=#{movieNo}
+	</select>
+
+</mapper>

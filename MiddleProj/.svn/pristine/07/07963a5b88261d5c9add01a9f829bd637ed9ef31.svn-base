@@ -1,0 +1,47 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.MovieServiceImpl;
+import kr.or.ddit.service.iMovieService;
+import kr.or.ddit.vo.MovieVo;
+
+@WebServlet("/updateMovie.do")
+public class udpateMovieController extends HttpServlet {
+	 iMovieService movieService = MovieServiceImpl.getInstance();
+	 
+	 @Override
+	    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	        String movieNo = req.getParameter("movieNo");
+	        String movieName = req.getParameter("movieName");
+	        String movieCompany = req.getParameter("movieCompany");
+	        int movieRelease = Integer.parseInt(req.getParameter("movieRelease"));
+	        String movieCountry = req.getParameter("movieCountry");
+	        int movieRunningtime = Integer.parseInt(req.getParameter("movieRunningtime"));
+	        String movieLevel = req.getParameter("movieLevel");
+	        String movieState = req.getParameter("movieState");
+	        String moviePoster = req.getParameter("moviePoster");
+	        String movieTrailer = req.getParameter("movieTrailer");
+	        
+	        MovieVo movie = new MovieVo();
+	        movie.setMovieNo(movieNo);
+	        movie.setMovieName(movieName);
+	        movie.setMovieCompany(movieCompany);
+	        movie.setMovieRelease(movieRelease);
+	        movie.setMovieCountry(movieCountry);
+	        movie.setMovieRunningtime(movieRunningtime);
+	        movie.setMovieLevel(movieLevel);
+	        movie.setMovieState(movieState);
+	        movie.setMoviePoster(moviePoster);
+	        movie.setMovieTrailer(movieTrailer);
+	        
+	        movieService.updateMovie(movie);
+	        
+	        resp.sendRedirect(req.getContextPath() + "/getMovie.do?movieNo=" + movieNo);
+	    }
+}

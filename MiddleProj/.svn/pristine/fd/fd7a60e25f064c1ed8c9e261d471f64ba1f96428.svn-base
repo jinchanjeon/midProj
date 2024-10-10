@@ -1,0 +1,140 @@
+@charset "EUC-KR";
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 20px;
+}
+
+.contentInner {
+    max-width: 800px;
+    margin: auto;
+}
+
+.reservation-inner {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.reservation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.reservation-header h3.title {
+    margin: 0;
+    font-size: 24px;
+}
+
+.badge-container {
+    display: flex;
+    align-items: center;
+}
+
+.badge {
+    background-color: #ffd700; /* 금색 */
+    color: black;
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin-left: 10px;
+}
+
+.reservation-desc {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.legend {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+}
+
+.legend .seat {
+    cursor: default; /* 기본 커서 */
+    opacity: 0.5; /* 반투명하게 표시 (선택 불가 상태) */
+}
+
+.legend .seat:hover {
+    pointer-events: none; /* 마우스 이벤트 비활성화 */
+}
+
+
+.seat {
+    width: 30px;
+    height: 30px;
+    border: none;
+    margin: 5px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.seat0 {
+    background-color: darkgrey; /* 일반석 색상 */
+}
+
+.seat1 {
+    background-color: #f1a7c2; /* 2인석 색상 */
+}
+
+.seat2 {
+    background-color: yellowgreen; /* 휠체어석 색상 */
+}
+
+.seat.selected {
+    border: 2px solid black; /* 선택된 좌석의 테두리를 빨간색으로 변경 */
+/*    background-color: #f0e68c;  선택된 좌석 배경색 */
+}
+
+.seat.sold {
+    background-color: lightgrey; /* 판매 완료 색상 */
+    cursor: not-allowed;
+}
+
+.screen {
+    height: 40px;
+    background-color: #666;
+    color: white;
+    text-align: center;
+    line-height: 40px;
+    margin: 20px 0;
+    border-radius: 4px;
+    position: relative;
+}
+
+#seats_list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#seats_list .row {
+    display: flex;
+    width: 100%;
+}
+
+#seats_list .row .seat {
+    margin-right: 10px;
+}
+
+@media (max-width: 600px) {
+    .reservation-inner {
+        padding: 15px;
+    }
+
+    .seat {
+        width: 25px;
+        height: 25px;
+    }
+}

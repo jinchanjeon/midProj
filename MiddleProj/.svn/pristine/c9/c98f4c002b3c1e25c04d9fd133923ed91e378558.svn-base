@@ -1,0 +1,42 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+
+import kr.or.ddit.mybatis.MyBatisDao;
+import kr.or.ddit.vo.StoreVo;
+
+public class StoreDaoImpl implements iStoreDao {
+    
+    private MyBatisDao myBatisDao;
+
+    public StoreDaoImpl() {
+        this.myBatisDao = new MyBatisDao();
+    }
+    
+    @Override
+    public List<StoreVo> getAllProducts() {
+        return myBatisDao.selectList("store.getAllProducts");
+    }
+
+    @Override
+    public StoreVo getProductById(String productId) {
+        return myBatisDao.selectOne("store.getProductById", productId);
+    }
+
+    @Override
+    public void addProduct(StoreVo product) {
+        myBatisDao.insert("store.addProduct", product);
+    }
+
+    @Override
+    public void updateProduct(StoreVo product) {
+        myBatisDao.update("store.updateProduct", product);
+    }
+
+    @Override
+    public void deleteProduct(String productId) {
+        myBatisDao.delete("store.deleteProduct", productId);
+    }
+}

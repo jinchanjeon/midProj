@@ -1,0 +1,86 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var='contextPath' value='${pageContext.request.contextPath}'></c:set>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+.findPw {
+/* 	background-color: white; */
+	border-radius: 8px;
+	padding: 20px;
+	width: 400px;
+	text-align: center;
+	margin: 0 auto; /* 가운데 정렬 */
+}
+
+.form-group {
+	margin-bottom: 15px; /* 입력란 간격 */
+}
+
+button {
+	background-color: #5cb85c;
+	color: white;
+	border: none;
+	padding: 10px;
+	border-radius: 8px;
+	cursor: pointer;
+	width: 100%;
+}
+</style>
+</head>
+<body>
+	<%@include file="../../includes/top.jsp"%>
+
+	<section class="upcoming-meetings">
+		<div class="findPw">
+			<!-- 		<h4>비밀번호 찾기</h4> -->
+			<form action="${contextPath}/findPw.do" method="post" class="user">
+
+				<div class="form-group">
+					<input type="text" name="memId"
+						class="form-control form-control-user" placeholder="아이디를 입력하세요">
+				</div>
+
+				<div class="form-group">
+					<input type="text" name="memName"
+						class="form-control form-control-user" placeholder="이름을 입력하세요">
+				</div>
+
+				<div class="form-group">
+					<input type="email" name="memMail"
+						class="form-control form-control-user"
+						aria-describedby="emailHelp" placeholder="이메일을 입력하세요">
+				</div>
+
+					<button type="submit" > 비밀번호 찾기</button>
+			</form>
+
+			<!-- 		비밀번호를 보여주는게 아닌 이메일로 비밀번호 변경 링크?를 보내는 방식이라 수정 필요 -->
+			<c:if test="${not empty sendPw}">
+				<p style="color: white;">
+					<strong>${sendPw}</strong>
+				</p>
+			</c:if>
+
+			<c:if test="${not empty error }">
+				<p style="color: red">${error}</p>
+			</c:if>
+
+			<hr>
+			<div class="text-center">
+				<a href="/MiddleProj/findId.do">아이디찾기</a> | <a
+					href="/MiddleProj/join.do">회원가입</a> | <a
+					href="/MiddleProj/login.do"> 로그인</a>
+			</div>
+
+		</div>
+		<%@include file="../../includes/bottom.jsp"%>
+	</section>
+
+
+</body>
+</html>

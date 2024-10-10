@@ -1,0 +1,20 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+
+import kr.or.ddit.vo.EventVo;
+
+public interface iEventDao {
+	
+	public List<EventVo> eventList();
+	
+	public EventVo eventDetail(String boardNo);
+	
+	public EventVo eventUpdate(EventVo event);
+
+	public EventVo eventInsert(EventVo event);
+	
+	public EventVo eventDelete(EventVo event);
+
+	public EventVo eventCnt(String boardNo);
+}

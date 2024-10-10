@@ -1,0 +1,39 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class MemberVo {
+
+	private int memNo;
+	private String memId;
+	private String memPw;
+	private String memName;
+	private String memBirth;
+	private String memPhone;
+	private String memRegdate;
+	private String memGender;
+	private int memCode;
+	private int memState;
+	private String memMail;
+	private int start;
+	private int end;
+	
+	private int mngNo;
+	private String spotCode;
+	private String spotName;
+	
+	
+//	장바구니에서 사용합니다
+	private int mem_no;
+	private String mem_id;
+	private String mem_pw;
+	private String mem_name;
+	private String mem_birth;
+	private String mem_phone;
+	private String mem_regdate;
+	private String mem_gender;
+	private int mem_code;
+	private int mem_state;
+	private String mem_mail;
+}

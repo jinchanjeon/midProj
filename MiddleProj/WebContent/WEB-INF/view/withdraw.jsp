@@ -1,0 +1,98 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var='contextPath' value='${pageContext.request.contextPath}'></c:set>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+
+section {
+    display: flex;
+   flex-direction: column; /* 세로 방향 정렬 */
+    justify-content: center; /* 수직 중앙 정렬 */  
+    align-items: center; /* 가로 중앙 정렬 */ 
+    height: 100vh; /* 화면 전체 높이 사용 */
+}
+.withdraw-container {
+
+background-color: white;
+	border-radius: 8px;
+	padding: 20px;
+	width: 400px;
+	text-align: center;
+	margin: 0 auto; /* 가운데 정렬 */
+
+}
+
+h2 {
+	margin-bottom: 20px;
+}
+
+input[type="password"] {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+button {
+	background-color: #5cb85c;
+	color: white;
+	border: none;
+	padding: 10px;
+	border-radius: 4px;
+	cursor: pointer;
+	width: 100%;
+}
+
+button:hover {
+	background-color: #4cae4c;
+}
+
+.error-message {
+	color: red;
+	margin-bottom: 10px;
+}
+</style>
+
+<script>
+	function confirmWithdraw() {
+		return confirm("정말로 회원 탈퇴를 하시겠습니까?");
+	}
+</script>
+</head>
+<body>
+	<%@include file="../../includes/top.jsp"%>
+
+	<section class="upcoming-meetings">
+		<div class="withdraw-container">
+			<h2>회원 탈퇴</h2>
+			<!-- 에러 메시지 표시 -->
+			<c:if test="${not empty error}">
+				<div style="color: red;">
+					<strong>${error}</strong>
+				</div>
+			</c:if>
+
+			<form action="${contextPath}/withdraw.do" method="post"
+				onsubmit="confirmWithdraw()">
+				<div>
+					<p>아이디 : ${member.memId}</p>
+					<label for="password">비밀번호 확인</label> <input type="password"
+						id="password" name="memPw" required>
+				</div>
+
+				<button type="submit">탈퇴하기</button>
+			</form>
+		</div>
+
+		<%@include file="../../includes/bottom.jsp"%>
+	</section>
+
+
+</body>
+</html>

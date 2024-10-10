@@ -1,0 +1,62 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.dao.StoreDaoImpl;
+import kr.or.ddit.dao.iStoreDao;
+import kr.or.ddit.vo.StoreVo;
+
+public class StoreServiceImpl implements iStoreService {
+    
+	private iStoreDao storeDao;
+
+    public StoreServiceImpl() {
+        this.storeDao = new StoreDaoImpl();
+    }
+    
+    @Override
+    public List<StoreVo> getAllProducts() {
+        return storeDao.getAllProducts();
+    }
+
+    @Override
+    public StoreVo getProductById(String productId) {
+        return storeDao.getProductById(productId);
+    }
+
+    @Override
+    public void addProduct(StoreVo product) {
+        storeDao.addProduct(product);
+    }
+
+    @Override
+    public void updateProduct(StoreVo product) {
+        storeDao.updateProduct(product);
+    }
+
+    @Override
+    public void deleteProduct(String productId) {
+        storeDao.deleteProduct(productId);
+    }
+    
+ // 장바구니 관련 메서드 구현
+    @Override
+    public List<StoreVo> getCartItems(int memNo) {
+        return storeDao.getCartItems(memNo);
+    }
+
+    @Override
+    public void addToCart(int memNo, String productId, int quantity) {
+        storeDao.addToCart(memNo, productId, quantity);
+    }
+
+    @Override
+    public void updateCartItemQuantity(int memNo, String productId, int quantity) {
+        storeDao.updateCartItemQuantity(memNo, productId, quantity);
+    }
+
+    @Override
+    public void removeFromCart(int memNo, String productId) {
+        storeDao.removeFromCart(memNo, productId);
+    }
+}

@@ -1,0 +1,91 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ActorVo;
+import kr.or.ddit.vo.BoxofficeVo;
+import kr.or.ddit.vo.DirectorVo;
+import kr.or.ddit.vo.GenreVo;
+import kr.or.ddit.vo.MovGenVo;
+import kr.or.ddit.vo.MovieActorVo;
+import kr.or.ddit.vo.MovieDirectorVo;
+import kr.or.ddit.vo.MovieVo;
+
+public interface iMovieService {
+	
+	/**
+	 * 영화 리스트 출력
+	 * @return
+	 */
+	public List<MovieVo> movieList();
+	public List<MovieVo> movieList100();
+	
+	/**
+	 * 영화 정보 db 저장
+	 * @param movie
+	 * @return
+	 */
+	public int insertMovie(MovieVo movieVo);
+	
+	
+	/**
+	 * 특정 영화 있는지 조회
+	 * @param movieCode
+	 * @return
+	 */
+	public MovieVo getMovie(MovieVo movieNo);
+	
+	/**
+	 * 영화 이름으로 조회
+	 * @param movieName
+	 * @return
+	 */
+	public List<MovieVo> getMovieName(MovieVo movieName);
+	
+	/**
+	 * 박스오피스 insert
+	 * @param boxVo
+	 * @return
+	 */
+	public int insertBox(BoxofficeVo boxVo);
+	
+	
+	/**
+	 * kmdb에 있는지 확인
+	 * @param movie
+	 * @return
+	 */
+	public MovieVo getMovieNameRelease(MovieVo movie);
+	
+	/**
+	 * 박스오피스 출력
+	 * @return
+	 */
+	public List<BoxofficeVo> boxList();
+	
+	
+	public List<MovieVo> boxInfo();
+	
+	public BoxofficeVo boxOfficeExists(String string);
+	
+	public Integer selectGenre(String genreNm);
+	
+	public void insertGenre(String gen);
+	public void insertMovGen(MovGenVo MG);
+	public void insertDir(DirectorVo dir);
+	public void insertMovDir(MovieDirectorVo mdvo);
+	public DirectorVo selectDir(int dir);
+	public MovGenVo getMovGen(MovGenVo mg);
+	public MovieDirectorVo getMovDir(MovieDirectorVo md);
+	
+	public void insertAct(ActorVo act);
+	public void insertMovAct(MovieActorVo mavo);
+	public ActorVo selectAct(int act);
+	public MovieActorVo getMovAct(MovieActorVo ma);
+	public List<GenreVo> selectAllGen();
+	public List<MovieVo> getMoviesByGenre(String genNo);
+	public List<GenreVo> selectGenFromMovNo(String movNo);
+	public List<ActorVo> selectActFromMovNo(String movNo);
+	public List<DirectorVo> selectDirFromMovNo(String movNo);
+	
+}

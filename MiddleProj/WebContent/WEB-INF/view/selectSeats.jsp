@@ -1,0 +1,252 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="java.util.List"%>
+<%@ page import="kr.or.ddit.vo.SeatVo"%>
+<%@ page import="java.util.Collections"%>
+<%@ page import="java.util.Comparator"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script> 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>좌석 선택</title>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/bootStrap/css/seatSelect.css">
+</head>
+<body>
+	<% 
+// JSP에서 필요한 변수 선언
+List<SeatVo> seatList = (List<SeatVo>) request.getAttribute("seatList");
+String movieNo = (String) request.getAttribute("movieNo");
+String date = (String) request.getAttribute("date");
+String spotCode = (String) request.getAttribute("spotCode");
+String scheduleNo = (String) request.getAttribute("scheduleNo");
+
+// 디버깅용 출력
+System.out.println("Movie No: " + movieNo);
+System.out.println("Date: " + date);
+System.out.println("Spot Code: " + spotCode);
+System.out.println("Schedule No: " + scheduleNo);
+%>
+	<div class="contentInner">
+		<div class="reservation-inner">
+			<!--             
+            <div class="reservation-header">
+                <button class="backBtn" type="button">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h3 class="title"><%= request.getAttribute("movieName") %></h3>
+                <div class="badge-container">
+                    <span class="badge bg-color-12" title="<%= request.getAttribute("movieLevel") %>"request.getAttribute("movieLevel")l") %></span>
+                </div>
+            </div>
+
+            <div class="reservation-desc">
+               request.getAttribute("date")e") %>request.getAttribute("movieStartTime")e") %> -request.getAttribute("movieEndTime")e") %>
+                <br>
+                <spanrequest.getAttribute("spotName")e") %></span>
+            </div>
+ -->
+
+			<div class="legend">
+				<div class="legendItem">
+					<div class="seat seat1"></div>
+					<div class="seatName">일반석</div>
+				</div>
+				<div class="legendItem">
+					<div class="seat seat3"></div>
+					<div class="seatName">2인석</div>
+				</div>
+				<div class="legendItem">
+					<div class="seat seat2"></div>
+					<div class="seatName">휠체어석</div>
+				</div>
+				<div class="legendItem">
+					<div class="seat selected"></div>
+					<div class="seatName">선택됨</div>
+				</div>
+				<div class="legendItem">
+					<div class="seat sold"></div>
+					<div class="seatName">선택불가</div>
+				</div>
+			</div>
+
+			<div class="screen">SCREEN</div>
+			<div class="seats" id="seats_list">
+				<%
+if (seatList != null) {
+    // 행(row) 및 열(col) 기준으로 정렬
+    Collections.sort(seatList, new Comparator<SeatVo>() {
+        @Override
+        public int compare(SeatVo seat1, SeatVo seat2) {
+            // 먼저 행 정보를 비교하고, 같다면 열 정보를 비교하여 정렬
+            int rowComparison = seat1.getSeatRow().compareTo(seat2.getSeatRow());
+            if (rowComparison == 0) {
+                return Integer.compare(Integer.parseInt(seat1.getSeatCol()), Integer.parseInt(seat2.getSeatCol()));
+            }
+            return rowComparison;
+        }
+    });
+
+    String lastRow = ""; // 이전 행을 추적
+    for (SeatVo seat : seatList) {
+        String currentRow = seat.getSeatRow(); // 현재 좌석의 행
+        String currentCol = seat.getSeatCol(); // 현재 좌석의 열
+
+        // 새로운 행 시작 시 div 생성
+        if (!currentRow.equals(lastRow)) {
+            if (!lastRow.isEmpty()) {
+                %></div><% // 이전 행 닫기
+            }
+            lastRow = currentRow; // 현재 행을 이전 행으로 설정
+            %>
+            <div class="row" style="margin-top: 10px;">
+            <% // 새로운 행 시작
+        }
+%>
+        <div
+            class="seat <%=seat.getSoldout() == 1 ? "sold" : "seat" + seat.getSeattypeCode()%>"
+            title="<%=seat.getSeatNo()%>" data-row="<%=currentRow%>"
+            data-col="<%=currentCol%>"
+            data-type="<%=seat.getSeattypeCode()%>"
+            data-price="<%=seat.getSeattypePrice()%>">
+            <%=currentRow + currentCol%>
+            <!-- 행과 열 정보 표시 -->
+        </div>
+<%
+    }
+%>
+</div> <!-- 마지막 행 닫기 -->
+<%
+} else {
+%>
+<p>좌석 정보가 없습니다.</p>
+<%
+}
+%>
+
+		</div>
+		<!-- 선택한 좌석 정보 표시 -->
+		<div class="selected-seats-info" style="display: none;">
+			<!-- Initially hidden -->
+			<br>
+			<br>
+			<div id="seat-summary"></div>
+			<div id="total-price" style="display: inline-block; margin-right: 10px;"></div>
+		</div>
+	<button id="reserveButton" style="display: none;">예약하기</button>
+	
+	</div>
+	<script>
+    let selectedSeats = []; // 좌석 정보를 저장할 배열
+
+    $(document).on('click', '.seat', function() {
+        if ($(this).hasClass('sold')) {
+            return; // sold 상태인 좌석 클릭 무시
+        }
+
+        $(this).toggleClass('selected'); // 클릭 시 선택 상태 토글
+        // 선택된 좌석의 정보
+        const row = $(this).data('row');
+        const col = $(this).data('col');
+        const price = $(this).data('price');
+        const type = $(this).data('type');
+        const typeName = seatTypeNames[type]; // 매핑된 타입 이름 가져오기
+        const seatNo = row + col; // 좌석 번호
+
+     // 선택된 좌석 정보를 배열에 추가하거나 제거
+        if ($(this).hasClass('selected')) {
+            // 선택 상태가 되었으면 배열에 추가
+            selectedSeats.push(seatNo);
+        } else {
+            // 선택 해제되었으면 배열에서 제거
+            selectedSeats = selectedSeats.filter(seat => seat !== seatNo);
+        }
+
+        updateSeatSummary();
+
+        // 결제하기 버튼 표시
+        if (selectedSeats.length > 0) {
+            $('#paymentButton').show(); // 선택된 좌석이 있을 때 버튼 표시
+        } else {
+            $('#paymentButton').hide(); // 선택된 좌석이 없으면 버튼 숨김
+        }
+    });
+    
+    $(document).on('click', '#reserveButton', function() {
+        if (selectedSeats.length === 0) {
+            alert("좌석을 선택하세요.");
+            return; // 선택된 좌석이 없으면 종료
+        }
+
+        // 예약할 좌석 정보를 AJAX로 서버에 전송
+        $.ajax({
+            url: 'reserveSeats.do', // 요청할 URL (서블릿)
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(selectedSeats), // 선택된 좌석 정보를 JSON 형식으로 변환
+            success: function(response) {
+                // 예약 성공 시 처리
+                alert("예약이 완료되었습니다.");
+                // 필요 시 페이지 리로드 또는 다른 작업 수행
+            },
+            error: function(xhr, status, error) {
+                // 오류 발생 시 처리
+                alert("예약 실패: " + error);
+            }
+        });
+    });
+
+
+    // 선택된 좌석 정보를 업데이트하는 함수
+    function updateSeatSummary() {
+        let summaryHtml = '';
+        let totalPrice = 0;
+        const seatCount = selectedSeats.length;
+
+
+            // 타입별로 선택된 좌석 그룹화
+            const groupedSeats = selectedSeats.reduce((acc, seat) => {
+                if (!acc[seat.typeName]) {
+                    acc[seat.typeName] = { count: 0, seats: [] };
+                }
+                acc[seat.typeName].count += 1;
+                acc[seat.typeName].seats.push(seat.seatNo);
+                totalPrice += seat.price;
+                return acc;
+            }, {});
+
+            // 그룹화된 좌석 정보를 출력(html로 변환)
+            for (const [typeName, data] of Object.entries(groupedSeats)) {
+//                 summaryHtml += data.count + '석 (' + data.seats.join(', ') + ') - ' + typeName + '<br>';
+                summaryHtml += typeName +' ' + data.count + '석 (' + data.seats.join(', ') + ') ' + '<br>';
+            }
+        
+
+        // HTML 업데이트
+        $('#seat-summary').html(summaryHtml);
+        $('#total-price').html('총 금액: ' + totalPrice + '원');
+    
+     // 선택된 좌석이 하나라도 있으면 보여주기
+        if (selectedSeats.length > 0) {
+            $('.selected-seats-info').show();
+        } else {
+            $('.selected-seats-info').hide(); // 선택된 좌석이 없으면 숨기기
+        }
+    }
+    // 타입 이름을 매핑할 객체
+    const seatTypeNames = {
+        1: "일반석",
+        2: "휠체어석",
+        3: "2인석"
+    };
+    
+    
+    
+ 
+</script>
+
+</body>
+</html>

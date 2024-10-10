@@ -1,0 +1,22 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import kr.or.ddit.vo.ScheduleVo;
+
+public class ScheduleDAO {
+	private SqlSessionFactory sqlSessionFactory;
+
+	// 생성자를 통해 SqlSessionFactory 주입받음
+	public ScheduleDAO(SqlSessionFactory sqlSessionFactory) {
+		this.sqlSessionFactory = sqlSessionFactory;
+	}
+
+	public List<ScheduleVo> getSchedules(String movieNo, String schDate) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+			return mapper.getSchedules(movieNo, schDate);
+		}
+	}
+}

@@ -1,0 +1,40 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+
+import kr.or.ddit.mybatis.MyBatisDao;
+import kr.or.ddit.vo.MovieVo;
+import kr.or.ddit.vo.ReservationVo;
+
+public class ReservationDaoImpl extends MyBatisDao implements iReservationDao {
+	private static ReservationDaoImpl instance;
+
+	private ReservationDaoImpl() {
+
+	}
+
+	public static ReservationDaoImpl getInstance() {
+
+		if (instance == null) {
+			instance = new ReservationDaoImpl();
+		}
+		return instance;
+	}
+
+	@Override
+	public List<ReservationVo> selectSpotByReg(String regNo) {
+		return selectList("reservation.selectSpotByReg");
+	}
+	
+	@Override
+	public List<ReservationVo> selectSeatsBySch(String schNo) {
+		return selectList("reservation.selectSeatBySch");
+	}
+
+	@Override
+	public List<MovieVo> selectRegionByMovie(String movieNo) {
+		return selectList("reservation.selectRegionByMovie");
+	}
+
+
+}

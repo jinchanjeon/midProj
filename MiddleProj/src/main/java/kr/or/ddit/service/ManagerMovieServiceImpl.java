@@ -1,0 +1,28 @@
+package kr.or.ddit.service;
+
+import kr.or.ddit.dao.MovieScheduleDao;
+import kr.or.ddit.dao.MovieScheduleDaoImpl;
+
+public class ManagerMovieServiceImpl implements MovieService {
+    private MovieScheduleDao movieScheduleDao = new MovieScheduleDaoImpl();
+
+    @Override
+    public void addMovieSchedule() {
+        // Implementation for adding a movie schedule
+    }
+
+    @Override
+    public void updateMovieSchedule() {
+        // Implementation for updating a movie schedule
+    }
+
+    @Override
+    public void deleteMovieSchedule() {
+        // Implementation for deleting a movie schedule
+    }
+
+    @Override
+    public void listMovieSchedules() {
+        // Implementation for listing movie schedules
+    }
+}

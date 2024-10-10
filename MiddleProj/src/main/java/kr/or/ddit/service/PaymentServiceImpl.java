@@ -1,0 +1,120 @@
+package kr.or.ddit.service;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.List;
+
+import org.json.JSONObject;
+
+import kr.or.ddit.dao.PaymentDaoImpl;
+import kr.or.ddit.dao.iPaymentDao;
+import kr.or.ddit.vo.ProdCartVo;
+import kr.or.ddit.vo.ProdOrderVo;
+import kr.or.ddit.vo.ProdPayVo;
+import kr.or.ddit.vo.ProdVo;
+import kr.or.ddit.vo.PurchaseVo;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class PaymentServiceImpl implements iPaymentService {
+
+	private static PaymentServiceImpl instance;
+
+	private PaymentServiceImpl() {
+
+	}
+
+	public static PaymentServiceImpl getInstance() {
+		if (instance == null) {
+			instance = new PaymentServiceImpl();
+
+		}
+		return instance;
+	}
+
+	iPaymentDao paymentDao = PaymentDaoImpl.getInstance();
+	
+	@Override
+	public ProdVo selectProdList(int prodNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insertOrder(ProdOrderVo order) {
+		paymentDao.insertOrder(order);
+	}
+
+	@Override
+	public void insertPayment(ProdPayVo pay) {
+		paymentDao.insertPayment(pay);
+	}
+
+	@Override
+	public List<ProdCartVo> selectCartItems(int memNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ProdVo> selectProdByCategory(int cateCodeNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static final String IMP_SECRET_KEY = "9D5xHyPeQ8o5nJFYK5y66JlAND8vhpyqKQkRqEe6kdVM9DJdOwxaygVpyF17IeSPkmozfggXcJrfhQy2";
+
+	@Override
+	public boolean verifyPayment(String imp_uid, int amount, String merchant_uid, Timestamp createdTime) throws IOException {
+	    OkHttpClient client = new OkHttpClient();
+
+	    Request request = new Request.Builder()
+	            .url("https://api.iamport.kr/payments/" + imp_uid)
+	            .addHeader("Authorization", IMP_SECRET_KEY)
+	            .build();
+
+	    try (Response response = client.newCall(request).execute()) {
+	        if (response.isSuccessful()){
+	            String responseBody = response.body().string();
+	            // JSON 파싱
+	            JSONObject jsonResponse = new JSONObject(responseBody);
+	            JSONObject data = jsonResponse.getJSONObject("response");
+
+	            String status = data.getString("status");
+	            int paidAmount = data.getInt("amount");
+	            
+	            System.out.println("jsonResponse:"+jsonResponse);
+	            System.out.println("data:"+data);
+	            System.out.println("status:"+status);
+	            System.out.println("paidAmount:"+paidAmount);
+
+	            // 결제 상태 및 금액 검증
+	            if ("paid".equals(status) && paidAmount == amount) {
+	                // 결제 성공 처리
+	                return true;
+	            } else {
+	                // 결제 실패 처리
+	                System.err.println("결제 상태 불일치: " + status);
+	                return false;
+	            }
+	        } else {
+	            System.err.println("결제 검증 실패: " + response);
+	            return false; // 결제 검증 요청 실패
+	        }
+	    }
+	}
+
+
+	@Override
+	public void insertPurchase(PurchaseVo pur) {
+		paymentDao.insertPurchase(pur);
+	}
+
+
+	@Override
+	public boolean verifyPayment(String imp_uid) throws IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+}

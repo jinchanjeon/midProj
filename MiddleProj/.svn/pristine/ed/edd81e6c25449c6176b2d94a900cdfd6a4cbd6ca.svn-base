@@ -1,0 +1,35 @@
+// 모달 제어 관련 변수
+var modal = document.getElementById("loginModal");
+var loginBtn = document.getElementById("loginBtn");
+var signupBtn = document.getElementById("signupBtn");
+var span = document.getElementsByClassName("close")[0];
+
+// 로그인/회원가입 폼 관련 변수
+var loginForm = document.getElementById("loginForm");
+var signupForm = document.getElementById("signupForm");
+
+// 로그인 버튼 클릭 시 로그인 폼 열기
+loginBtn.onclick = function () {
+  modal.style.display = "block";
+  loginForm.classList.add("active");
+  signupForm.classList.remove("active");
+}
+
+// 회원가입 버튼 클릭 시 회원가입 폼 열기
+signupBtn.onclick = function () {
+  modal.style.display = "block";
+  signupForm.classList.add("active");
+  loginForm.classList.remove("active");
+}
+
+// 닫기 버튼 클릭 시 모달 닫기
+span.onclick = function () {
+  modal.style.display = "none";
+}
+
+// 모달 외부 클릭 시 모달 닫기
+window.onclick = function (event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}

@@ -1,0 +1,23 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ProductVO;
+
+public interface ProductDAO {
+
+    // 상품 추가
+    void insertProduct(ProductVO product);
+
+    // 상품 수정
+    void updateProduct(ProductVO product);
+
+    // 상품 삭제
+    void deleteProduct(String productId);
+
+    // 특정 상품 조회
+    ProductVO selectProductById(String productId);
+
+    // 모든 상품 조회
+    List<ProductVO> getAllProducts();
+}

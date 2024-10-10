@@ -1,0 +1,125 @@
+package kr.or.ddit.dao;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+
+import kr.or.ddit.mybatis.MybatisUtil;
+import kr.or.ddit.vo.SpotVo;
+import kr.or.ddit.vo.StoreVo;
+
+public class StoreDaoImpl implements iStoreDao {
+	
+	private static StoreDaoImpl instance;
+
+	private StoreDaoImpl() {
+
+	}
+
+	public static StoreDaoImpl getInstance() {
+		if (instance == null) {
+			instance = new StoreDaoImpl();
+
+		}
+		return instance;
+	}
+
+
+    
+    @Override
+    public List<StoreVo> getAllProducts() {
+        System.out.println("StoreDaoImpl: getAllProducts 메서드 호출");
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            List<StoreVo> products = sqlSession.selectList("store.getAllProducts");
+            System.out.println("StoreDaoImpl: 조회된 제품 수: " + (products != null ? products.size() : "null"));
+            if (products != null && !products.isEmpty()) {
+                System.out.println("StoreDaoImpl: 첫 번째 제품 정보: " + products.get(0));
+            }
+            return products;
+        }
+    }
+    
+    @Override
+    public StoreVo getProductById(String productId) {
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            return sqlSession.selectOne("store.getProductById", productId);
+        }
+    }
+
+    @Override
+    public void addProduct(StoreVo product) {
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            sqlSession.insert("store.addProduct", product);
+            sqlSession.commit();
+        }
+    }
+
+    @Override
+    public void updateProduct(StoreVo product) {
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            sqlSession.update("store.updateProduct", product);
+            sqlSession.commit();
+        }
+    }
+
+    @Override
+    public void deleteProduct(String productId) {
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            sqlSession.delete("store.deleteProduct", productId);
+            sqlSession.commit();
+        }
+    }
+    
+    @Override
+    public List<StoreVo> getCartItems(int memNo) {
+        System.out.println("StoreDaoImpl: getCartItems 메서드 호출");
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            List<StoreVo> cartItems = sqlSession.selectList("store.getCartItems", memNo);
+            System.out.println("StoreDaoImpl: 조회된 장바구니 항목 수: " + (cartItems != null ? cartItems.size() : "null"));
+            return cartItems;
+        }
+    }
+
+    @Override
+    public int addToCart(int memNo, String productId, int quantity) {
+        System.out.println("StoreDaoImpl: addToCart 메서드 호출");
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("memNo", memNo);
+            paramMap.put("productId", productId);
+            paramMap.put("quantity", quantity);
+            int result = sqlSession.insert("store.addToCart", paramMap);
+            sqlSession.commit();
+            return result;
+        }
+    }
+
+    @Override
+    public int updateCartItemQuantity(int memNo, String productId, int quantity) {
+        System.out.println("StoreDaoImpl: updateCartItemQuantity 메서드 호출");
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("memNo", memNo);
+            paramMap.put("productId", productId);
+            paramMap.put("quantity", quantity);
+            int result = sqlSession.update("store.updateCartItemQuantity", paramMap);
+            sqlSession.commit();
+            return result;
+        }
+    }
+
+    @Override
+    public int removeFromCart(int memNo, String productId) {
+        System.out.println("StoreDaoImpl: removeFromCart 메서드 호출");
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("memNo", memNo);
+            paramMap.put("productId", productId);
+            int result = sqlSession.delete("store.removeFromCart", paramMap);
+            sqlSession.commit();
+            return result;
+        }
+    }
+}

@@ -1,0 +1,40 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import kr.or.ddit.vo.MemberVo;
+@WebServlet("/myinfo.do")
+public class myinfoController extends HttpServlet{
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		HttpSession session = req.getSession();
+		MemberVo member = (MemberVo)session.getAttribute("member");
+		
+//		SimpleDateFormat sdate = new SimpleDateFormat("yyyy-MM-dd");
+		
+		String memBirth = member.getMemBirth();;
+		
+		
+		String memId= member.getMemId();
+		String memPw = member.getMemPw();
+		String memPhone = member.getMemPhone();
+		String memName = member.getMemName();
+		String memMail = member.getMemMail();
+		memBirth = memBirth.substring(0,10);
+		String memGender = member.getMemGender();
+	
+		
+		
+		req.getRequestDispatcher("/WEB-INF/view/myinfo.jsp").forward(req, resp);
+	
+	}
+}

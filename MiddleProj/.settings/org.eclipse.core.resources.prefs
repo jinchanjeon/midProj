@@ -1,0 +1,13 @@
+eclipse.preferences.version=1
+<<<<<<< .mine
+encoding//WebContent/WEB-INF/view/managerlist.jsp=UTF-8
+encoding//WebContent/WEB-INF/view/managermain.jsp=UTF-8
+encoding//WebContent/WEB-INF/view/movieList.jsp=UTF-8
+||||||| .r448841
+encoding/<project>=UTF-8
+=======
+encoding//WebContent/WEB-INF/view/managerlist.jsp=UTF-8
+encoding//WebContent/WEB-INF/view/managermain.jsp=UTF-8
+encoding//WebContent/WEB-INF/view/movieList.jsp=UTF-8
+encoding/<project>=UTF-8
+>>>>>>> .r448965

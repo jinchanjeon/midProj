@@ -1,0 +1,79 @@
+	
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.BoardServiceImpl;
+import kr.or.ddit.service.iBoardService;
+import kr.or.ddit.vo.BoardVo;
+
+@WebServlet("/boardDetail.do")
+public class BoardDetailController extends HttpServlet {
+    private iBoardService boardService = BoardServiceImpl.getInstance();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String boardNo = req.getParameter("boardNo");
+        System.out.println("BoardDetailController: Fetching detail for boardNo = " + boardNo);
+
+        if (boardNo != null && !boardNo.isEmpty()) {
+            // 조회수 증가
+            boardService.incrementBoardCount(boardNo);
+            
+            // 업데이트된 게시글 정보 가져오기
+            BoardVo board = boardService.getBoard(boardNo);
+            System.out.println("BoardDetailController: Retrieved board = " + board);
+            
+            if (board != null) {
+                req.setAttribute("board", board);
+                req.getRequestDispatcher("/WEB-INF/view/boardDetail.jsp").forward(req, resp);
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "게시글을 찾을 수 없습니다.");
+            }
+        } else {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "올바른 게시글 번호가 필요합니다.");
+        }
+    }
+    
+    /*
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String boardNo = req.getParameter("boardNo");
+        System.out.println("BoardDetailController: Fetching detail for boardNo = " + boardNo);
+
+        if (boardNo != null && !boardNo.isEmpty()) {
+            BoardVo board = boardService.getBoard(boardNo);
+            System.out.println("BoardDetailController: Retrieved board = " + board);
+            
+            if (board != null) {
+                req.setAttribute("board", board);
+                req.getRequestDispatcher("/WEB-INF/view/boardDetail.jsp").forward(req, resp);
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "게시글을 찾을 수 없습니다.");
+            }*/
+        
+            
+            /*if (board != null) {
+                // 조회수 증가 로직
+                boardService.incrementBoardCount(boardNo);
+                
+                // 업데이트된 게시글 정보 다시 가져오기
+                board = boardService.getBoard(boardNo);
+                
+                req.setAttribute("board", board);
+                req.getRequestDispatcher("/WEB-INF/view/boarddetail.jsp").forward(req, resp);
+            } else {
+                System.out.println("BoardDetailController: Board not found for boardNo = " + boardNo);
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "게시글을 찾을 수 없습니다.");
+            }
+        } else {
+            System.out.println("BoardDetailController: Invalid boardNo parameter");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "올바른 게시글 번호가 필요합니다.");
+        }*/
+}

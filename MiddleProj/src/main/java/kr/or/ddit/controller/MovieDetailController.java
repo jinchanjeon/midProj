@@ -1,0 +1,77 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.jasper.tagplugins.jstl.core.ForEach;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.MovieServiceImpl;
+import kr.or.ddit.service.ReviewServiceImpl;
+import kr.or.ddit.service.iMovieService;
+import kr.or.ddit.service.iReviewService;
+import kr.or.ddit.vo.ActorVo;
+import kr.or.ddit.vo.DirectorVo;
+import kr.or.ddit.vo.GenreVo;
+import kr.or.ddit.vo.MovieVo;
+import kr.or.ddit.vo.ReviewVo;
+@WebServlet("/movieDetail.do")
+public class MovieDetailController extends HttpServlet {
+    iMovieService movieService = MovieServiceImpl.getInstance();
+    iReviewService reviewService = ReviewServiceImpl.getInstance();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String movieNo = req.getParameter("movie_no");
+
+        MovieVo movie = new MovieVo();
+        movie.setMovieNo(movieNo);
+
+        MovieVo movieDetail = movieService.getMovie(movie);
+        List<ReviewVo> reviewList = reviewService.reviewList(movieNo);
+        List<GenreVo> genreList = movieService.selectGenFromMovNo(movieNo);
+        List<ActorVo> actorList = movieService.selectActFromMovNo(movieNo);
+        List<DirectorVo> directorList = movieService.selectDirFromMovNo(movieNo);
+        Float review = reviewService.reviewAVG(movieNo);
+        if (review != null) {
+            req.setAttribute("review", review);
+        } else {
+            req.setAttribute("review", 0.0f); // 기본값 설정 (예: 0.0)
+        }
+        
+        // 장르에 따른 추천 영화 리스트
+        List<MovieVo> recommendedMovies = new ArrayList<>();
+
+        List<GenreVo> genbymov = movieService.selgenbymovie(movieNo);
+        if (genbymov != null) {
+        for (GenreVo genre : genbymov) {
+            List<MovieVo> movieListByGenre = movieService.selmoviebygen(genre.getGenName());
+            recommendedMovies.addAll(movieListByGenre); // 중복된 영화는 고려하지 않음
+        }
+        }
+        
+        // 중복 제거 (optional)
+        Set<MovieVo> uniqueRecommendedMovies = new HashSet<>(recommendedMovies);
+        recommendedMovies.clear();
+        recommendedMovies.addAll(uniqueRecommendedMovies);
+        
+        
+        
+        
+        req.setAttribute("genreList", genreList);
+        req.setAttribute("actorList", actorList);
+        req.setAttribute("directorList", directorList);
+        req.setAttribute("reviewList", reviewList);
+        req.setAttribute("movieDetail", movieDetail);
+        req.setAttribute("recommendedMovies", recommendedMovies); // 추천 영화 리스트 전달
+
+        req.getRequestDispatcher("/WEB-INF/view/movieDetail.jsp").forward(req, resp);
+    }
+}

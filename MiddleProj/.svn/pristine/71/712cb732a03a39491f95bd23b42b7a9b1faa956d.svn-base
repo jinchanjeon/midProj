@@ -1,0 +1,99 @@
+/* 좌석 기본 스타일 */ 
+.seat {
+    width: 30px; /* 좌석 크기 줄임 */
+    height: 30px; /* 좌석 크기 줄임 */
+    margin: 5px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    border-radius: 4px; /* 둥근 모서리 추가 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+.reserve-container{
+    display: flex;
+}
+
+/* 좌석 상태에 따른 스타일 */
+.sold {
+    background-color: lightgrey;
+    pointer-events: none; /* 예약된 좌석 클릭 불가 처리 */
+}
+
+.seat1 {
+    background-color: grey;
+}
+.seat2 {
+    background-color: green;
+}
+.seat3 {
+    background-color: #ffc0cb;
+}
+.selected {
+    border: 2px solid red;
+}
+
+/* 좌석 행(row) 배치 */
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+/* 레이아웃 수정을 위한 기본 스타일 */
+.reservation-header,
+.reservation-desc,
+.legend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.legendItem {
+    margin: 0 15px;
+}
+
+.legend .seat {
+    pointer-events: none; /* 선택 불가능하게 설정 */
+}
+
+.empty {
+    pointer-events: none; /* 빈 좌석 클릭 불가 처리 */
+}
+
+/* Legend 좌석 타입별 색상 */
+.legend .seat1 {
+    background-color: grey; /* 일반석 */
+}
+
+.legend .seat2 {
+    background-color: green; /* 휠체어석 */
+}
+
+.legend .seat3 {
+    background-color: #ffc0cb; /* 2인석 */
+}
+
+/* Reserve Container */
+.reserve-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 예약 버튼 스타일 */
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #45a049;
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.dao.SeatMapper">
+    <resultMap id="seatResultMap" type="kr.or.ddit.vo.SeatVo">
+        <result property="seatNo" column="SEAT_NO" />
+        <result property="seatRow" column="SEAT_ROW" />
+        <result property="seatCol" column="SEAT_COL" />
+        <result property="seattypeCode" column="SEATTYPE_CODE" />
+        <result property="roomType" column="ROOM_TYPE" />
+        <result property="seattypeName" column="SEATTYPE_NAME" />
+        <result property="seattypePrice" column="SEATTYPE_PRICE" />
+        <result property="movieReservNo" column="MOVIE_RESERV_NO" />
+        <result property="schNo" column="SCH_NO" />
+        <result property="soldout" column="SOLDOUT" />
+        <result property="seatDisno" column="SEAT_DISNO" />
+        <result property="seatDisName" column="SEAT_DIS_NAME" />
+        <result property="seatDisPrice" column="SEAT_DIS_PRICE" />
+    </resultMap>
+
+    <select id="getAllSeats" resultMap="seatResultMap">
+        SELECT * FROM SEAT
+    </select>
+
+    <select id="getSeatByNo" resultMap="seatResultMap">
+        SELECT * FROM SEAT WHERE SEAT_NO = #{seatNo}
+    </select>
+
+    <insert id="reserveSeat">
+        INSERT INTO RESERVED_SEAT (SEAT_NO, SCH_NO, SOLDOUT) VALUES (#{seatNo}, #{schNo}, 0)
+    </insert>
+
+    <delete id="cancelReservation">
+        DELETE FROM RESERVED_SEAT WHERE SEAT_NO = #{seatNo}
+    </delete>
+</mapper>

@@ -1,0 +1,146 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>장바구니</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: black !important;
+        }
+        h1 {
+            font-family: Arial, sans-serif;
+            color: #FFFFFF;
+            margin: 0;
+            padding: 20px;
+            background-color: #222222;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            background-color: #FFFFFF;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            font-weight: bold;
+            text-align: right;
+            padding: 10px;
+        }
+        .button-buy {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    function updateQuantity(productId, change) {
+        var quantityInput = document.getElementById('quantity_' + productId);
+        var newQuantity = parseInt(quantityInput.value) + change;
+        console.log("Updating cart item:", productId, "New quantity:", newQuantity);
+        if (newQuantity > 0) {
+            $.ajax({
+                url: '${pageContext.request.contextPath}/storeCart.do',
+                method: 'POST',
+                data: {
+                    action: 'update',
+                    productId: productId, 
+                    quantity: newQuantity
+                },
+                success: function(response) {
+                    console.log("Server response:", response);
+                    if (response.status === "success") {
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", status, error);
+                    console.log("Response Text:", xhr.responseText);
+                    alert("오류가 발생했습니다: " + error);
+                }
+            });
+        }
+    }
+
+        function removeItem(productId) {
+            $.ajax({
+                url: '${pageContext.request.contextPath}/storeCart.do',
+                method: 'POST',
+                data: {
+                    action: 'remove',
+                    productId: productId
+                },
+                success: function(response) {
+                    location.reload();
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <c:if test="${not empty mem_name}">
+    <h1>${mem_name}님의 장바구니입니다</h1>
+</c:if>
+<c:if test="${empty mem_name}">
+    <h1>장바구니</h1>
+</c:if>
+
+    <c:if test="${empty cartItems}">
+        <p>장바구니가 비어있습니다.</p>
+    </c:if>
+    <c:if test="${not empty cartItems}">
+        <table>
+            <thead>
+                <tr>
+                    <th>상품명</th>
+                    <th>가격</th>
+                    <th>수량</th>
+                    <th>소계</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach var="item" items="${cartItems}">
+                    <tr>
+                        <td>${item.product_name}</td>
+                        <td><fmt:formatNumber value="${item.price}" type="currency" currencySymbol="₩" /></td>
+                        <td>
+                            <button onclick="updateQuantity('${item.product_id}', -1)">-</button>
+                            <input type="text" id="quantity_${item.product_id}" value="${item.quantity}" readonly style="width: 30px; text-align: center;">
+                            <button onclick="updateQuantity('${item.product_id}', 1)">+</button>
+                        </td>
+                        <td><fmt:formatNumber value="${item.price * item.quantity}" type="currency" currencySymbol="₩" /></td>
+                        <td>
+                            <button onclick="removeItem('${item.product_id}')">삭제</button>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+        <div class="total" style="background-color: #333333; color: white; padding: 10px 10px 5px 10px; border-radius: 5px;">
+            총 금액: <fmt:formatNumber value="${cartItems.stream().map(item -> item.price * item.quantity).sum()}" type="currency" currencySymbol="₩" />
+        </div>
+    </c:if>
+    
+    <a href="${pageContext.request.contextPath}/storeCartPurchase.do" class="button-buy">구매하기</a>
+    <a href="${pageContext.request.contextPath}/store.do" style="background-color: green; color: white; padding: 10px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 20px;">상품 목록으로 돌아가기</a>
+</body>
+</html>

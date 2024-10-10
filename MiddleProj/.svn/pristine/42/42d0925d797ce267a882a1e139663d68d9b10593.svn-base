@@ -1,0 +1,163 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+	.rq{color:red}
+
+</style>
+</head>
+<body>
+	
+	<div class="col-sm-8">
+		<h4>회원가입</h4>
+		<hr>
+		<form class="form-horizontal" method="post" onsubmit="return validateForm()" >
+			<div class="form-group">
+				<label for="id" class="control-label col-sm-2">아이디 <span class="rq">*</span> </label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id="id" name="memId" placeholder="공백없이 입력하세요"
+					required onblur ="trimInput(this)" >
+				</div>
+			</div>
+			<div class="col-sm-6" style="text-align: left;">
+            <span id="disp"></span>
+	      </div>
+		
+		
+		<div class="form-group">
+	      <label for="pass" class="control-label col-sm-2">비밀번호<span class="rq"> *</span></label>
+	      <div class="col-sm-4">
+	        <input type="password" class="form-control" id="pass" name="memPw"  placeholder="영문자, 숫자, 특수문자 포함, 최소 8자 이상"
+	        required pattern="(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*?[!@#\$%\^&amp;\*\(\)_\+\|]).{8,}" onblur ="trimInput(this)">
+	      </div>
+	    </div>
+	    
+	    <div class="form-group">
+	      <label for="passConfirm" class="control-label col-sm-2">비밀번호 확인<span class="rq"> *</span></label>
+	      <div class="col-sm-4">
+	        <input type="password" class="form-control" id="passConfirm" name="mem_passConfirm" 
+	        required pattern="(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*?[!@#\$%\^&amp;\*\(\)_\+\|]).{8,}"  onblur ="trimInput(this)">
+	      </div>
+	    </div>
+	    
+	    <div class="form-group">
+	      <label for="name" class="control-label col-sm-2">이름<span class="rq"> *</span></label>
+	      <span class="sp"></span>
+	      <div class="col-sm-4">
+	        <input type="text" class="form-control" id="name" name="memName" 
+	        required pattern ="[가-힣]{2,30}"  onblur ="trimInput(this)">
+	      </div>
+	    </div>
+	    
+	    <div class="form-group">
+	      <label for="bir" class="control-label col-sm-2">생년월일<span class="rq"> *</span></label>
+	      <div class="col-sm-4">
+	        <input type="date" class="form-control" id="bir" name="memBirth">
+	      </div>
+	    </div>
+	    
+	    <div class="form-group">
+	      <label for="hp" class="control-label col-sm-2">휴대폰 번호<span class="rq"> *</span></label>
+	      <div class="col-sm-4">
+	        <input type="text" class="form-control" id="hp" name="memPhone" placeholder="010-0000-0000" 
+	        required pattern="[0-9]{2,3}-\d{3,4}-\d{4}"  onblur ="trimInput(this)">
+	      </div>
+	    </div>
+	    
+	    <div class="form-group">
+	      <label for="mail" class="control-label col-sm-2">이메일<span class="rq"> *</span></label>
+	      <div class="col-sm-4">
+	        <input type="email" class="form-control" id="mail" name="memMail" required  onblur ="trimInput(this)">
+<!-- 	        pattern="[0-9a-zA-Z]+@[0-9a-zA-Z]+(\.[a-z]+){1,2}"> -->
+<!-- 	        pattern="\w+@\w+(\.[a-z]+){1,2}"> -->
+	      </div>
+	    </div>
+	    
+	    <div class="form-group">
+	       <input type="radio" id="male" name="memGender" value="male" required>
+        <label for="male">남성</label>
+        <input type="radio" id="female" name="memGender" value="female" required>
+        <label for="female">여성</label>
+	    </div>
+	    
+	       
+  
+	    <div class="form-group">
+	      <div class="col-sm-offset-2 col-sm-6">
+	        <button class="btn btn-default" id="joinBtn" type="submit">가입하기</button>
+	        <span id="joinspan"></span>
+	      </div>
+	    </div>
+	  </form>
+		
+	</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script><!-- 임시로 사용중 -->	
+<!-- 	jQuery의 외부 라이브러리 사용 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/3.2.1/jquery.serializejson.min.js" referrerpolicy="no-referrer"></script>
+	<script>
+		
+		function trimInput(input){
+			
+			input.value = input.value.replace(/\s+/g, '');
+		}
+		
+		// 비밀번호 확인(점검 필요)
+		function validateForm() {
+			
+			 let password = document.getElementById("pass").value;
+	         let confirmPassword = document.getElementById("passConfirm").value;
+
+	         //비밀번호 일치여부 확인
+	            if (password != confirmPassword) {
+	                alert("비밀번호와 비밀번호 확인이 다릅니다.");
+	                return false; // 제출을 막음
+	            }
+	         
+	         	if($("#disp").text() == "사용불가"){
+	         		alert("중복되는 아이디입니다. 다른 아이디를 입력하세요.");
+	         		return false;
+	         	}
+	            
+	            
+	            return confirm("입력하신 정보로 회원가입을 진행합니다."); // 제출 가능
+			
+		};
+	
+		$("#id").on("blur", function(){
+			
+			
+			//입력된 id정보 가져와서 ajax로 중복인지 체크
+			let $idVal = $("#id").val();
+		
+				
+				$.ajax({
+					//web-inf내부 문서는 직접적인 접근 불가
+					//servlet으로 연결해서 이동해야함 
+					url: "idChk.jsp?memId="+ $idVal, 
+					type: "get", 
+					success: function(data){
+						
+						if(data.rst == "ok"){
+							$("#disp").text("사용가능").css("color","green");
+						}
+						else{
+							$("#disp").text("사용불가").css("color","red");
+							
+						}
+					}
+				,error: function(xhr){
+					alert("오류상태: "+xhr.status);
+				}
+				,dataType: "json"
+				})
+		
+		});
+	</script>
+	
+</body>
+</html>

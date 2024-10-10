@@ -1,0 +1,66 @@
+<%@page import="java.util.List"%>
+<%@page import="kr.or.ddit.vo.EventVo"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	EventVo event = (EventVo)request.getAttribute("event");
+%>    
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<style>
+table{
+	width : 100%;
+	text-align : center;
+	border: 1px solid black;
+}
+</style>
+</head>
+<body>
+event Detail
+    <input type="button" value="뒤로가기" onclick="location.href='eventList'">
+	<table border = "">
+		<thead>
+			<tr>
+				<th>게시판 번호</th>
+				<th><%= event.getBoardNo() %></th>
+				<th>제목</th>
+				<th colspan="3"><%= event.getBoardTitle() %></th>
+			</tr>
+			<tr>
+				<th>날짜</th>
+				<th><%= event.getBoardWriteDate() %></th>
+				<th>작성자</th>
+				<th><%= event.getWriter() %></th>
+				<th>조회수</th>
+				<th><%= event.getBoardCnt() %></th>
+				<th>종료일</th>
+				<th><%=event.getBoardEnd() %></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td colspan="6"> <%= event.getBoardContent() %>
+			
+				</td>
+			
+			</tr>
+		</tbody>
+	</table>
+<%-- 	<a href="/MiddleProj/eventList"><%=event.getBoardNo() %>으로 이동</a> --%>
+	<a href="/MiddleProj/eventList">목록으로 이동</a>
+	<a href="/MiddleProj/eventInsert">게시글 작성</a>
+	<a href="/MiddleProj/eventUpdate?boardNo=<%= event.getBoardNo()%>">게시글 수정</a>
+<!-- 	<a href="/MiddleProj/eventList/boardDelete">게시글 삭제 </a> -->
+	
+	<form action="/MiddleProj/eventDelete?<%= event.getBoardNo()%>" method="post">
+    <input type="hidden" name="boardNo" value="<%= event.getBoardNo()%>">
+    <button type="submit">삭제</button>
+</form>
+	
+	
+</body>
+</html>

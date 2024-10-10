@@ -1,0 +1,53 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import kr.or.ddit.mybatis.MybatisUtil;
+import kr.or.ddit.vo.StoreVo;
+
+public class StoreDaoImpl implements iStoreDao {
+    
+    @Override
+    public List<StoreVo> getAllProducts() {
+        System.out.println("StoreDaoImpl: getAllProducts 메서드 호출");
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            List<StoreVo> products = sqlSession.selectList("store.getAllProducts");
+            System.out.println("StoreDaoImpl: 조회된 제품 수: " + (products != null ? products.size() : "null"));
+            if (products != null && !products.isEmpty()) {
+                System.out.println("StoreDaoImpl: 첫 번째 제품 정보: " + products.get(0));
+            }
+            return products;
+        }
+    }
+    
+    @Override
+    public StoreVo getProductById(String productId) {
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            return sqlSession.selectOne("store.getProductById", productId);
+        }
+    }
+
+    @Override
+    public void addProduct(StoreVo product) {
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            sqlSession.insert("store.addProduct", product);
+            sqlSession.commit();
+        }
+    }
+
+    @Override
+    public void updateProduct(StoreVo product) {
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            sqlSession.update("store.updateProduct", product);
+            sqlSession.commit();
+        }
+    }
+
+    @Override
+    public void deleteProduct(String productId) {
+        try (SqlSession sqlSession = MybatisUtil.getInstance()) {
+            sqlSession.delete("store.deleteProduct", productId);
+            sqlSession.commit();
+        }
+    }
+}

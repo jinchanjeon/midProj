@@ -1,0 +1,14 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Manager Dashboard</title>
+</head>
+<body>
+    <h1>Manager Dashboard</h1>
+    <ul>
+        <li><a href="main?type=movieSchedule">Movie Schedule Management</a></li>
+        <li><a href="main?type=product">Product Management</a></li>
+        <li><a href="main?type=sales">Sales Management</a></li>
+    </ul>
+</body>
+</html>

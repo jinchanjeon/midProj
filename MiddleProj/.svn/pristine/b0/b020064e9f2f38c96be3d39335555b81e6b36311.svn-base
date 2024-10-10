@@ -1,0 +1,174 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+
+import kr.or.ddit.mybatis.MyBatisDao;
+import kr.or.ddit.vo.ActorVo;
+import kr.or.ddit.vo.BoxofficeVo;
+import kr.or.ddit.vo.DirectorVo;
+import kr.or.ddit.vo.GenreVo;
+import kr.or.ddit.vo.MovGenVo;
+import kr.or.ddit.vo.MovieActorVo;
+import kr.or.ddit.vo.MovieDirectorVo;
+import kr.or.ddit.vo.MovieVo;
+
+public class MovieDaoImpl  extends MyBatisDao implements iMovieDao {
+
+	private static MovieDaoImpl instance;
+
+	private MovieDaoImpl() {
+
+	}
+
+	public static MovieDaoImpl getInstance() {
+		if (instance == null) {
+			instance = new MovieDaoImpl();
+
+		}
+		return instance;
+	}
+
+	@Override
+	public int insertMovie(MovieVo movieVo) {
+		return insert("movie.insertMovie",movieVo);
+	}
+
+	@Override
+	public List<MovieVo> movieList() {
+		return selectList("movie.movieList");
+	}
+
+	@Override
+	public MovieVo getMovie(MovieVo movieNo) {
+		return selectOne("movie.getMovie", movieNo);
+	}
+
+	@Override
+	public List<MovieVo> getMovieName(MovieVo movieName) {
+	    return selectList("movie.getMovieName", movieName);
+	}
+
+	@Override
+	public int insertBox(BoxofficeVo boxVo) {
+		return insert("movie.insertbox",boxVo);
+	}
+
+	@Override
+	public MovieVo getMovieNameRelease(MovieVo movie) {
+		return selectOne("movie.getMovieNameRelease",movie);
+	}
+
+	@Override
+	public List<BoxofficeVo> boxList() {
+		return selectList("movie.boxList");
+	}
+
+	@Override
+	public List<MovieVo> boxInfo() {
+		return selectList("movie.boxInfo");
+	}
+
+	@Override
+	public BoxofficeVo boxOfficeExists(String box) {
+		return selectOne("movie.boxOfficeExists", box);
+	}
+
+	@Override
+	public List<MovieVo> movieList100() {
+		return selectList("movie.movieList100");
+	}
+
+	@Override
+	public Integer selectGenre(String gen) {
+	    return selectOne("movie.selectGenre", gen);
+	}
+
+
+	@Override
+	public void insertGenre(String gen) {
+		insert("movie.insertGenre",gen);
+	}
+
+	@Override
+	public void insertMovGen(MovGenVo MG) {
+	    if (getMovGen(MG) == null) { // 장르와 영화가 존재하는지 확인
+	        insert("movie.insertMovGen", MG);
+	    } else {
+	        throw new RuntimeException("이 장르와 영화의 조합이 이미 존재합니다.");
+	    }
+	}
+
+
+	@Override
+	public void insertDir(DirectorVo dir) {
+		insert("movie.insertDir",dir);
+	}
+
+	@Override
+	public void insertMovDir(MovieDirectorVo dir) {
+		insert("movie.insertMovDir",dir);
+	}
+
+	@Override
+	public DirectorVo selectDir(int dir) {
+		return selectOne("movie.selectDir",dir);
+	}
+
+	@Override
+	public MovGenVo getMovGen(MovGenVo mg) {
+		return selectOne("movie.getMovGen",mg);
+	}
+
+	@Override
+	public MovieDirectorVo getMovDir(MovieDirectorVo md) {
+		return selectOne("movie.getMovDir",md);
+	}
+
+	@Override
+	public void insertAct(ActorVo act) {
+		insert("movie.insertAct",act);
+	}
+
+	@Override
+	public void insertMovAct(MovieActorVo mavo) {
+		insert("movie.insertMovAct",mavo);
+	}
+
+	@Override
+	public ActorVo selectAct(int act) {
+		return selectOne("movie.selectAct",act);
+	}
+
+	@Override
+	public MovieActorVo getMovAct(MovieActorVo ma) {
+		return selectOne("movie.getMovAct",ma);
+	}
+
+	@Override
+	public List<GenreVo> selectAllGen() {
+		return selectList("movie.selectAllGen");
+	}
+
+	@Override
+	public List<MovieVo> getMoviesByGenre(String genNo) {
+		return selectList("movie.getMoviesByGenre",genNo);
+	}
+
+	@Override
+	public List<GenreVo> selectGenFromMovNo(String movNo) {
+		return selectList("movie.selectGenFromMovNo",movNo);
+	}
+
+	@Override
+	public List<ActorVo> selectActFromMovNo(String movNo) {
+		return selectList("movie.selectActFromMovNo",movNo);
+	}
+
+	@Override
+	public List<DirectorVo> selectDirFromMovNo(String movNo) {
+		return selectList("movie.selectDirFromMovNo",movNo);
+	}
+
+
+
+}

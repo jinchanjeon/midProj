@@ -1,0 +1,50 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.MovieServiceImpl;
+import kr.or.ddit.service.ReviewServiceImpl;
+import kr.or.ddit.service.iMovieService;
+import kr.or.ddit.service.iReviewService;
+import kr.or.ddit.vo.ActorVo;
+import kr.or.ddit.vo.DirectorVo;
+import kr.or.ddit.vo.GenreVo;
+import kr.or.ddit.vo.MovieVo;
+import kr.or.ddit.vo.ReviewVo;
+
+@WebServlet("/movieDetail.do")
+public class MovieDetailController extends HttpServlet{
+	iMovieService movieService = MovieServiceImpl.getInstance();
+	iReviewService reviewService = ReviewServiceImpl.getInstance();
+	
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String movieNo = req.getParameter("movie_no");
+	
+		MovieVo movie = new MovieVo();
+		movie.setMovieNo(movieNo);
+		
+		MovieVo movieDetail = movieService.getMovie(movie);
+		
+		List<ReviewVo> reviewList = reviewService.reviewList(movieNo);
+		
+		List<GenreVo> genreList  = movieService.selectGenFromMovNo(movieNo);
+		List<ActorVo> actorList  = movieService.selectActFromMovNo(movieNo);
+		List<DirectorVo> DirectorList  = movieService.selectDirFromMovNo(movieNo);
+		
+		
+		req.setAttribute("genreList",genreList);
+		req.setAttribute("actorList",actorList);
+		req.setAttribute("DirectorList",DirectorList);
+		req.setAttribute("reviewList", reviewList);
+		req.setAttribute("movieDetail", movieDetail);
+		req.getRequestDispatcher("/WEB-INF/view/movieDetail.jsp").forward(req, resp);
+	}
+	
+}

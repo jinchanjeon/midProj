@@ -1,0 +1,37 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import kr.or.ddit.vo.ReservationVo;
+
+public class SeatDaoImpl implements iSeatDao {
+
+    private SqlSessionFactory sqlSessionFactory; // MyBatis의 SqlSessionFactory
+
+    public SeatDaoImpl(SqlSessionFactory sqlSessionFactory) {
+        this.sqlSessionFactory = sqlSessionFactory; // SqlSessionFactory 주입
+    }
+
+    // 좌석 조회
+    @Override
+    public List<ReservationVo> getSeat(String schNo) {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            return session.selectList("kr.or.ddit.mapper.SeatMapper.getSeat", schNo);
+        }
+    }
+
+    // 좌석 저장
+    @Override
+    public void saveSeats(List<String> seatIds, String schNo) {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            for (String seatId : seatIds) {
+                // 좌석 상태 업데이트
+                session.update("kr.or.ddit.mapper.SeatMapper.updateSeatStatus", seatId, schNo);
+                // 예약 정보 저장
+                session.insert("kr.or.ddit.mapper.SeatMapper.insertReservation", new ReservationVo(seatId, schNo));
+            }
+            session.commit(); // 트랜잭션 커밋
+        }
+    }
+}

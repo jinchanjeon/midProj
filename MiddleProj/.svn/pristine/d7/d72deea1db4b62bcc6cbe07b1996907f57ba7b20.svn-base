@@ -1,0 +1,363 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var='contextPath' value='${pageContext.request.contextPath}'></c:set>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manager Page</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+body, html {
+	background-color: black !important;
+	color: white !important;
+	height: 100%; /* 전체 높이에도 적용 */
+	margin: 0;
+	padding: 0;
+}
+
+
+
+section, .info, .modal-content {
+	background-color: black;
+	color: white;
+}
+
+.info {
+	display: flex;
+	justify-content: space-around;
+	margin: 20px 0;
+}
+
+#memberList, #managerList {
+	width: 500px;
+	height: 300px;
+	border: 1px solid #ddd;
+	overflow-y: scroll;
+	display: none;
+}
+
+p {
+	color: white !important;
+}
+
+#memberList p, #managerList p {
+	margin: 10px 0;
+	padding: 0 10px;
+}
+
+#memberList hr, #managerList hr {
+	border: 0;
+	height: 1px;
+	background-color: #ccc;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    padding-top: 60px; /* Location of the box */
+}
+
+
+.modal-content {
+	background-color: #fefefe;
+	margin-top: 0 !important; /* 15% from the top and centered */
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%; /* Could be more or less, depending on screen size */
+}
+
+
+input[type="text"], input[type="password"], input[type="date"], input[type="tel"],
+	input[type="email"] {
+	width: 100%;
+	padding: 10px;
+	margin: 5px 0;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+</style>
+</head>
+<body>
+	<%@ include file="../../includes/top.jsp"%>
+
+	<section class="heading-page">
+		<div class="info">
+			<div>
+				<h3 class="selmem" data-memcode="1">회원정보 조회</h3>
+				<div id="memberList"></div>
+			</div>
+			<div>
+				<h3 class="selmem" data-memcode="2" style="display: inline;">매니저
+					조회</h3>
+				<button id="addManagerBtn" style="margin-left: 10px;">등록</button>
+				<div id="managerList"></div>
+			</div>
+
+		</div>
+	</section>
+
+	<!-- 모달 -->
+	<!-- 모달 -->
+	<div id="myModal" class="modal">
+		<div class="modal-content">
+			<!-- <span class="close">&times;</span> -->
+			<h2>매니저 등록</h2>
+			<form id="managerForm">
+				<input type="hidden" id="memNo" name="memNo"
+					value="${manager.memNo }"> 
+					<%-- <select id="spotCode" required>
+					<option value="">-- 지점 선택 --</option>
+					<c:forEach var="spot" items="${spotList}">
+						<option value="${spot.spotCode}">${spot.spotName}</option>
+					</c:forEach>
+				</select>
+ --%>
+				<!-- <div id="spotInfo" style="margin-top: 10px;"></div>
+ -->
+
+				<input type="text" id="memId" placeholder="매니저 아이디" required>
+				<input type="password" id="memPw" placeholder="매니저 비밀번호" required>
+				<input type="text" id="memName" placeholder="매니저 이름" required>
+				<input type="date" id="memBirth" placeholder="생년월일" required>
+				<input type="tel" id="memPhone" placeholder="휴대폰 번호" required>
+
+				<!-- 성별 선택 -->
+				<select id="memGender" name="memGender" required>
+					<option value="">성별 선택</option>
+					<option value="male">남</option>
+					<option value="female">여</option>
+				</select> <input type="email" id="memMail" placeholder="이메일" required>
+				<button type="submit" id="submitButton">등록</button>
+				<button  class="closeModal">닫기</button>
+			</form>
+		</div>
+	</div>
+
+</body>
+<script>
+	$(document).ready(function() {
+		loadMembers(1);
+		loadManagers(2);
+
+		// 모달 열기
+		$('#addManagerBtn').on('click', function() {
+			resetModal();
+			$('#myModal').show();
+		});
+
+		// 모달 닫기
+		$('.closeModal').on('click', function() {
+			$('#myModal').hide();
+		});
+
+		// 모달 외부 클릭 시 닫기
+		$(window).on('click', function(event) {
+			if ($(event.target).is('#myModal')) {
+				$('#myModal').hide();
+			}
+		});
+
+		// 폼 제출 처리
+		$('#managerForm').on('submit', function(e) {
+			e.preventDefault(); // 기본 제출 방지
+			registerManager(); // 등록 함수 호출
+		});
+	});
+
+	function resetModal() {
+		// 모든 입력 필드 초기화
+		$('#memId').val('');
+		$('#memPw').val('');
+		$('#memName').val('');
+		$('#memBirth').val('');
+		$('#memPhone').val('');
+		$('#memGender').val('');
+		$('#memMail').val('');
+		$('#submitButton').text("등록"); // 버튼 텍스트 초기화
+	}
+
+	function loadMembers(memCode) {
+		$.ajax({
+			url : "${contextPath}/selectMember.do",
+			type : "GET",
+			data : {
+				memCode : memCode
+			},
+			dataType : "json",
+			success : function(resp) {
+				$('#memberList').empty();
+				resp.forEach(function(member) {
+					$('#memberList').append(
+							'<p>회원 ID: ' + member.memId + '</p>' + '<p>회원 이름: '
+									+ member.memName + '</p>' 
+									+'<hr>');
+				});
+				$('#memberList').show();
+			},
+			error : function() {
+				alert("회원 조회에 실패했습니다.");
+			}
+		});
+	}
+
+	function loadManagers(memCode) {
+		$.ajax({
+			url : "${contextPath}/selectMember.do",
+			type : "GET",
+			data : {
+				memCode : memCode
+			},
+			dataType : "json",
+			success : function(resp) {
+				$('#managerList').empty();
+				resp.forEach(function(manager) {
+					$('#managerList').append(
+							'<p>매니저 ID: ' + manager.memId + '</p>'
+									+ '<p>매니저 이름: ' + manager.memName + '</p>'
+									+ '<div class="button-container">'
+									+ '<button onclick="moveToMypage(\''
+									+ manager.memNo + '\')">이동</button>'
+									+ '<button onclick="editManager(\''
+									+ manager.memNo + '\')">수정</button>'
+									+ '<button onclick="deleteManager(\''
+									+ manager.memId + '\')">삭제</button>'
+									+ '</div>' + '<hr>');
+				});
+				$('#managerList').show();
+			},
+			error : function() {
+				alert("매니저 조회에 실패했습니다.");
+			}
+		});
+	}
+
+	function moveToMypage(memNo) {
+		// 매니저 마이페이지 이동
+		window.location.href = "${contextPath}/mypage.do?memNo=" + memNo;
+	}
+
+	function editManager(memNo) {
+		$
+				.ajax({
+					url : "${contextPath}/getManager.do",
+					type : "GET",
+					data : {
+						memNo : memNo
+					},
+					success : function(response) {
+						document.getElementById("memId").value = response.memId;
+						document.getElementById("memPw").value = response.memPw; // 수정: 비밀번호 값 할당
+						document.getElementById("memMail").value = response.memMail;
+						document.getElementById("memPhone").value = response.memPhone;
+						document.getElementById("memName").value = response.memName;
+						document.getElementById("memBirth").value = response.memBirth;
+						document.getElementById("memGender").value = response.memGender;
+
+						$('#submitButton').text("수정");
+
+						$('#submitButton').off('click').on('click', function() {
+							updateManager(memNo);
+						});
+
+						$('#myModal').show();
+					},
+					error : function() {
+						alert("매니저 정보를 불러오는데 실패했습니다.");
+					}
+				});
+	}
+
+	function updateManager(memNo) {
+		const memId = document.getElementById("memId").value;
+		const memPw = document.getElementById("memPw").value;
+		const memMail = document.getElementById("memMail").value;
+		const memPhone = document.getElementById("memPhone").value;
+		const memName = document.getElementById("memName").value;
+		const memBirth = document.getElementById("memBirth").value;
+		const memGender = document.getElementById("memGender").value;
+		$.ajax({
+			url : "${contextPath}/updateManager.do",
+			type : "POST",
+			data : {
+				memNo : memNo,
+				memId : memId,
+				memPw : memPw,
+				memMail : memMail,
+				memPhone : memPhone,
+				memName : memName,
+				memBirth : memBirth,
+				memGender : memGender,
+			},
+			success : function(response) {
+				alert("수정되었습니다.");
+				$('#myModal').hide(); // 모달 닫기
+				loadManagers(2);
+			},
+			error : function() {
+				alert("수정 실패");
+			}
+
+		})
+	}
+
+	function deleteManager(memId) {
+		if (confirm("정말 삭제하시겠습니까?")) {
+			alert("삭제할 매니저 ID: " + memId);
+			$.ajax({
+				url : "${contextPath}/deleteManager.do",
+				type : "POST",
+				data : {
+					memId : memId
+				},
+				success : function(response) {
+					alert("매니저 삭제되었습니다.");
+					location.reload();
+				},
+				error : function() {
+					alert("리뷰 삭제 실패!");
+				}
+			});
+
+		}
+	}
+
+	function registerManager() {
+		const managerData = {
+			memId : $('#memId').val(),
+			memPw : $('#memPw').val(),
+			memName : $('#memName').val(),
+			memBirth : $('#memBirth').val(),
+			memPhone : $('#memPhone').val(),
+			memGender : $('#memGender').val(),
+			memMail : $('#memMail').val(),
+		};
+
+		$.ajax({
+			url : "${contextPath}/insertManager.do", // 등록 요청 URL
+			type : "POST",
+			data : managerData,
+			success : function(response) {
+				alert("매니저 등록이 완료되었습니다.");
+				$('#myModal').hide(); // 모달 닫기
+				loadManagers(2); // 매니저 리스트 새로고침
+			},
+			error : function() {
+				alert("매니저 등록에 실패했습니다.");
+			}
+		});
+	}
+</script>
+
+</html>

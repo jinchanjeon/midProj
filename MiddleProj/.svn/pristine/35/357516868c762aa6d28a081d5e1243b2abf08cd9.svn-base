@@ -1,0 +1,28 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var='contextPath' value='${pageContext.request.contextPath}'></c:set>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<html>
+<head>
+<title>Manager dashboard</title>
+</head>
+<style>
+body, html {
+	background-color: black !important;
+}
+h1{
+color:white;
+}
+</style>
+<body>
+	<%@include file="../../includes/top.jsp"%>
+	<section class="heading-page">
+	<h1>Manager dashboard</h1>
+	<ul>
+		<li><a href="${contextPath }/movieSchedule.do">영화 스케줄 관리</a></li>
+		<li><a href="${contextPath }/product.do">상품 관리</a></li>
+		<li><a href="${contextPath }/sales.do">매출 관리</a></li>
+	</ul>
+	</section>
+</body>
+</html>

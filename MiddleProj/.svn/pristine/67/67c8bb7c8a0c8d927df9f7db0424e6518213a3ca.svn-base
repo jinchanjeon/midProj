@@ -1,0 +1,25 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/payment/complete")
+public class PaymentCompleteController extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String imp_uid = request.getParameter("imp_uid");
+        
+        PaymentService paymentService = new PaymentService();
+        try {
+            paymentService.verifyPayment(imp_uid);
+            // 결제 정보 DB 저장
+            response.getWriter().write("결제 완료 처리 성공");
+        } catch (IOException e) {
+            response.getWriter().write("결제 확인 실패");
+        }
+    }
+}

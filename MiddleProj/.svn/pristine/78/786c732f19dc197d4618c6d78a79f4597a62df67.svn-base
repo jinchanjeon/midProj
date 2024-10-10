@@ -1,0 +1,22 @@
+package kr.or.ddit.service;
+
+import kr.or.ddit.vo.MemberVo;
+
+public interface iMemberService {
+
+	//로그인 검증
+	public MemberVo login(MemberVo member);
+
+	//회원 가입
+	public int join(MemberVo member);
+
+	//아이디 찾기
+	public MemberVo findId(MemberVo memberVo);
+
+	//아이디로 회원번호 찾기
+	public int selectMemNo(String memId);
+	
+	//비밀번호 찾기
+	public MemberVo findPw(MemberVo memberVo);
+
+}

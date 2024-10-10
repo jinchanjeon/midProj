@@ -1,0 +1,38 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+
+import com.google.gson.Gson; // Gson 라이브러리 추가 필요
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.ReviewServiceImpl;
+import kr.or.ddit.service.iReviewService;
+import kr.or.ddit.vo.ReviewVo;
+
+@WebServlet("/getReview.do")
+public class ReviewController extends HttpServlet {
+    iReviewService reviewService = ReviewServiceImpl.getInstance();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String reviewCode = req.getParameter("reviewCode");
+
+        ReviewVo review = reviewService.selectReview(reviewCode);
+
+        System.out.println("수정전: " + review);
+        System.out.println("reviewCode: " + review.getReviewCode());
+        
+        // JSON 응답 설정
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+
+        // Gson을 사용하여 JSON으로 변환
+        Gson gson = new Gson();
+        String json = gson.toJson(review);
+
+        resp.getWriter().write(json); // JSON 데이터 전송
+    }
+}

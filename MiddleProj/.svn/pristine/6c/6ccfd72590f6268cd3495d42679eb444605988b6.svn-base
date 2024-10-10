@@ -1,0 +1,33 @@
+package kr.or.ddit.dao;
+
+import java.util.List;
+
+import kr.or.ddit.vo.MemberVo;
+
+public interface iMemberDao {
+
+	//로그인 검증 
+	public MemberVo login(MemberVo member);
+
+	//회원 가입
+	public int join(MemberVo member);
+
+	//아이디 찾기
+	public MemberVo findId(MemberVo memberVo);
+
+	public int selectMemNo(String memId);
+	//비밀번호 찾기
+	public MemberVo findPw(MemberVo memberVo);
+
+	//개인정보 수정
+	public int update(MemberVo member);
+	
+	public List<MemberVo> selectMem();
+
+
+	//회원 탈퇴 처리
+	public int withdraw(MemberVo member);
+	
+	public MemberVo selectMembyId(String id);
+
+}

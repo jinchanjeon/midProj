@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comment">
+	
+	<resultMap type="CommentVo" id="CommentVo">
+	    <result property="cmt_no" column="cmt_no" />
+		<result property="cmt_content" column="cmt_content" />
+		<result property="cmt_parent_no" column="cmt_parent_no" />
+		<result property="cmt_date" column="cmt_date" />
+		<result property="cmt_depth" column="cmt_depth" />
+		<result property="cmt_order_number" column="cmt_order_number" />
+		<result property="board_no" column="board_no" />
+		<result property="mem_no" column="mem_no" />
+	</resultMap>
+	
+    <!-- 새로운 댓글 삽입 -->
+    <insert id="insertComment" parameterType="kr.or.ddit.vo.CommentVo">
+        INSERT INTO comment (
+            CMT_NO, 
+            CMT_CONTENT, 
+            CMT_PARENT_NO,
+            CMT_DATE, 
+            CMT_DEPTH, 
+            CMT_ORDER_NUMBER, 
+            BOARD_NO, 
+            MEM_NO
+        ) VALUES (
+            COMMENT_SEQ.NEXTVAL, 
+            #{cmt_content}, 
+            NULL, 
+            SYSDATE, 
+            0, 
+            0, 
+            #{board_no}, 
+            #{mem_no}
+        )
+    </insert>
+
+    <!-- 특정 게시글의 모든 댓글 조회 -->
+    <select id="selectCommentsByBoardNo" parameterType="string" resultType="kr.or.ddit.vo.CommentVo">
+        SELECT 
+            c.CMT_NO, 
+            c.CMT_CONTENT, 
+            c.CMT_PARENT_NO,
+            c.CMT_DATE, 
+            c.CMT_DEPTH, 
+            c.CMT_ORDER_NUMBER, 
+            c.BOARD_NO, 
+            c.MEM_NO,
+            m.MEM_NAME as WRITER_NAME
+        FROM 
+            COMMENT c
+        JOIN
+            MEMBER m ON c.MEM_NO = m.MEM_NO
+        WHERE 
+            c.BOARD_NO = #{boardNo}
+        ORDER BY 
+            c.CMT_DATE ASC
+    </select>
+
+    <!-- 댓글 수정 -->
+    <update id="updateComment" parameterType="kr.or.ddit.vo.CommentVo">
+        UPDATE COMMENT
+        SET CMT_CONTENT = #{cmt_content}
+        WHERE CMT_NO = #{cmt_no}
+    </update>
+
+    <!-- 댓글 삭제 -->
+    <delete id="deleteComment" parameterType="int">
+        DELETE FROM COMMENT
+        WHERE CMT_NO = #{cmt_no}
+    </delete>
+</mapper>

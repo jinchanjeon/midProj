@@ -1,0 +1,127 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var='contextPath' value='${pageContext.request.contextPath}'></c:set>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>로그인 페이지</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link
+	href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900"
+	rel="stylesheet">
+<link
+	href="${contextPath}/resources/boogie/edu-meeting/vendor/bootstrap/css/bootstrap.min.css"
+	rel="stylesheet">
+<link
+	href="${contextPath}/resources/boogie/edu-meeting/assets/css/fontawesome.css"
+	rel="stylesheet">
+<link
+	href="${contextPath}/resources/boogie/edu-meeting/assets/css/templatemo-edu-meeting.css"
+	rel="stylesheet">
+<link
+	href="${contextPath}/resources/boogie/edu-meeting/assets/css/login.css"
+	rel="stylesheet">
+
+<style>
+/* header-sticky 고정 스타일 */
+.header-sticky {
+	z-index: 1000; /* 다른 요소보다 위에 오도록 설정 */
+	background-color: black; /* 배경색 설정 */
+}
+
+body {
+	padding-top: 70px; /* 상단바 높이만큼 여백 추가 */
+}
+
+.form-group {
+	max-width: 400px; /* 최대 너비 설정 */
+	margin: 0 auto; /* 가운데 정렬 */
+}
+.button-group {
+        max-width: 400px; /* 버튼 그룹 최대 너비 설정 */
+        margin: auto; /* 가운데 정렬 */
+    }
+</style>
+</head>
+
+<body>
+
+	<!-- ***** Header Area Start ***** -->
+	<header class="header-area header-sticky">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<nav class="main-nav">
+						<a href="${contextPath}/main.do" class="logo"> Boogie Movie </a>
+						<ul class="nav">
+							<li><a href="${contextPath}/movieList.do">영화</a></li>
+							<li><a href="${contextPath}/eventList">이벤트</a></li>
+							<li><a href="${contextPath}/store.do">스토어</a></li>
+							<li><a href="${contextPath}/board.do">게시판</a></li>
+							<li><a href="${contextPath}/login.do" class="active">로그인</a></li>
+							<li><a href="${contextPath}/join.do">회원가입</a></li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- ***** Header Area End ***** -->
+
+	<section class="services">
+		<div class="container mt-5">
+			<c:if test="${not empty message}">
+				<div class="alert alert-danger">${message}</div>
+			</c:if>
+			<form action="${contextPath}/login.do" method="post" class="user">
+				<div class="form-group">
+					<input type="text" class="form-control form-control-user"
+						name="userId" placeholder="아이디">
+				</div>
+				<div class="form-group">
+					<input type="password" class="form-control form-control-user"
+						name="userPw" placeholder="비밀번호">
+				</div>
+				<div class="button-group">
+					<input type="submit" class="btn btn-primary btn-user btn-block"
+						value="로그인">
+				</div>
+				<div class="text-center">
+					<a href="${contextPath}/findId.do">아이디찾기</a> | <a
+						href="${contextPath}/findPw.do">비밀번호찾기</a> | <a
+						href="${contextPath}/join.do">회원가입</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<!-- Scripts -->
+	<script
+		src="${contextPath}/resources/boogie/edu-meeting/vendor/jquery/jquery.min.js"></script>
+	<script
+		src="${contextPath}/resources/boogie/edu-meeting/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script
+		src="${contextPath}/resources/boogie/edu-meeting/assets/js/custom.js"></script>
+	<script>
+        // Scroll behavior for the nav menu
+        $('.nav li:first').addClass('active');
+        var showSection = function showSection(section, isAnimate) {
+            var direction = section.replace(/#/, ''),
+                reqSection = $('.section').filter('[data-section="' + direction + '"]'),
+                reqSectionPos = reqSection.offset().top - 0;
+
+            if (isAnimate) {
+                $('body, html').animate({ scrollTop: reqSectionPos }, 800);
+            } else {
+                $('body, html').scrollTop(reqSectionPos);
+            }
+        };
+
+
+ 
+    </script>
+</body>
+</html>

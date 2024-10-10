@@ -1,0 +1,112 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.StoreServiceImpl;
+import kr.or.ddit.service.iStoreService;
+import kr.or.ddit.vo.StoreVo;
+
+@WebServlet("/store.do")
+public class StoreController extends HttpServlet {
+
+    private iStoreService storeService;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        this.storeService = new StoreServiceImpl();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        
+        if (action == null || action.equals("list")) {
+            listProducts(request, response);
+        } else if (action.equals("add")) {
+            showAddForm(request, response);
+        } else if (action.equals("edit")) {
+            showEditForm(request, response);
+        } else if (action.equals("delete")) {
+            deleteProduct(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        
+        if (action.equals("add")) {
+            addProduct(request, response);
+        } else if (action.equals("edit")) {
+            updateProduct(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    private void listProducts(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<StoreVo> products = storeService.getAllProducts();
+        request.setAttribute("products", storeService.getAllProducts());
+        request.getRequestDispatcher("/WEB-INF/view/storeIndex.jsp").forward(request, response);
+        
+     // 콘솔에 데이터 출력
+        System.out.println("Retrieved products:");
+        for (StoreVo product : products) {
+            System.out.println(product);
+        }
+        
+        request.setAttribute("products", products);
+        request.getRequestDispatcher("/WEB-INF/view/storeIndex.jsp").forward(request, response);
+    }
+
+    private void showAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/view/addProduct.jsp").forward(request, response);
+    }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String productId = request.getParameter("id");
+        StoreVo product = storeService.getProductById(productId);
+        request.setAttribute("product", product);
+        request.getRequestDispatcher("/WEB-INF/view/editProduct.jsp").forward(request, response);
+    }
+
+    private void deleteProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String productId = request.getParameter("id");
+        storeService.deleteProduct(productId);
+        response.sendRedirect("store.do?action=list");
+    }
+
+    private void addProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        StoreVo product = new StoreVo();
+        product.setProduct_name(request.getParameter("product_name"));
+        product.setPrice(Integer.parseInt(request.getParameter("price")));
+        product.setStock(Integer.parseInt(request.getParameter("stock")));
+        product.setCategory_id(request.getParameter("category_id"));
+        product.setStore_id(request.getParameter("store_id"));
+        
+        storeService.addProduct(product);
+        response.sendRedirect("store.do?action=list");
+    }
+
+    private void updateProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        StoreVo product = new StoreVo();
+        product.setProduct_id(request.getParameter("product_id"));
+        product.setProduct_name(request.getParameter("product_name"));
+        product.setPrice(Integer.parseInt(request.getParameter("price")));
+        product.setStock(Integer.parseInt(request.getParameter("stock")));
+        product.setCategory_id(request.getParameter("category_id"));
+        product.setStore_id(request.getParameter("store_id"));
+        
+        storeService.updateProduct(product);
+        response.sendRedirect("store.do?action=list");
+    }
+}

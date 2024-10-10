@@ -1,0 +1,35 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.dao.ScheduleDAO;
+import kr.or.ddit.mybatis.MybatisUtil;
+import kr.or.ddit.vo.ScheduleVo;
+
+@WebServlet("/theaterSelect.do")
+public class TheaterSelectServlet extends HttpServlet {
+	 private ScheduleDAO scheduleDAO;
+	 
+	  @Override
+	    public void init() throws ServletException {
+		  scheduleDAO = new ScheduleDAO(MybatisUtil.getSqlSessionFactory());	    }
+	 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	 String movieNo = request.getParameter("movieNo");
+         String schDate = request.getParameter("schDate");
+         
+      // 스케줄 조회
+         List<ScheduleVo> schedules = scheduleDAO.getSchedules(movieNo, schDate);
+         request.setAttribute("schedules", schedules);
+         
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/theaterSelect.jsp");
+        dispatcher.forward(request, response); // JSP로 포워딩
+    }
+}

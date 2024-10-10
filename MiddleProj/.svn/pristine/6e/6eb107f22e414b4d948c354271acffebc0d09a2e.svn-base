@@ -1,0 +1,60 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import kr.or.ddit.service.MemberServiceImpl;
+import kr.or.ddit.service.iMemberService;
+import kr.or.ddit.vo.MemberVo;
+
+@WebServlet("/login.do")
+public class LoginController extends HttpServlet{
+
+	iMemberService memberService = MemberServiceImpl.getInstance();
+	
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		req.getRequestDispatcher("/WEB-INF/view/Login.jsp").forward(req, resp);
+		
+	}
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		// 요청 정보 받기
+		String userId = req.getParameter("userId");
+		String userPw = req.getParameter("userPw");
+		
+		//System.out.println(userId +", " +userPw); 입력값 확인
+		
+		// memberVo에 데이터 추가하기
+		MemberVo member = new MemberVo();
+		member.setMemId(userId);
+		member.setMemPw(userPw);
+		
+		member = memberService.login(member);
+		
+		if(member == null) {
+			
+			//로그인 실패
+			req.setAttribute("message", "로그인에 실패했습니다.");
+			req.getRequestDispatcher("/WEB-INF/view/Login.jsp").forward(req, resp);
+		}
+		else {
+			//로그인 성공
+			HttpSession session = req.getSession();
+			session.setAttribute("member", member);
+			
+			resp.sendRedirect("/MiddleProj/main.do"); 
+		}
+		
+		
+	}
+
+	
+}

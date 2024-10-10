@@ -1,0 +1,67 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.ProductService;
+import kr.or.ddit.service.ProductServiceImpl;
+import kr.or.ddit.vo.ProductVO;
+
+@WebServlet("/product/*")
+public class ProductController extends HttpServlet {
+
+    private ProductService productService = ProductServiceImpl.getInstance();
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getPathInfo();
+        
+        if (action.equals("/add")) {
+            ProductVO product = new ProductVO();
+            product.setProductId(request.getParameter("productId"));
+            product.setStoreId(request.getParameter("storeId"));
+            product.setProductName(request.getParameter("productName"));
+            product.setPrice(Double.parseDouble(request.getParameter("price")));
+            product.setStock(Integer.parseInt(request.getParameter("stock")));
+            product.setCategoryId(request.getParameter("categoryId"));
+            product.setImgUrl(request.getParameter("imgUrl"));
+            product.setContent(request.getParameter("content"));
+
+            productService.addProduct(product);
+            response.sendRedirect(request.getContextPath() + "/product/list");
+        } else if (action.equals("/update")) {
+            ProductVO product = new ProductVO();
+            product.setProductId(request.getParameter("productId"));
+            product.setStoreId(request.getParameter("storeId"));
+            product.setProductName(request.getParameter("productName"));
+            product.setPrice(Double.parseDouble(request.getParameter("price")));
+            product.setStock(Integer.parseInt(request.getParameter("stock")));
+            product.setCategoryId(request.getParameter("categoryId"));
+            product.setImgUrl(request.getParameter("imgUrl"));
+            product.setContent(request.getParameter("content"));
+
+            productService.updateProduct(product);
+            response.sendRedirect(request.getContextPath() + "/product/list");
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getPathInfo();
+
+        if (action.equals("/delete")) {
+            String productId = request.getParameter("productId");
+            productService.deleteProduct(productId);
+            response.sendRedirect(request.getContextPath() + "/product/list");
+        } else if (action.equals("/list")) {
+            List<ProductVO> products = productService.getAllProducts();
+            request.setAttribute("products", products);
+            request.getRequestDispatcher("/listProducts.jsp").forward(request, response);
+        }
+    }
+}

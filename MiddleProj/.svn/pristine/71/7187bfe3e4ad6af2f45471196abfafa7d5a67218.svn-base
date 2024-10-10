@@ -1,0 +1,11 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Movie Schedule Management</title>
+</head>
+<body>
+    <h1>Movie Schedules</h1>
+    <a href="movieScheduleForm.jsp?action=add">Add New Schedule</a>
+    <!-- Add logic to display movie schedules here -->
+</body>
+</html>

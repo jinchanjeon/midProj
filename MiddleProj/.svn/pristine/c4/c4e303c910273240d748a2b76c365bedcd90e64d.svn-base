@@ -1,0 +1,54 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class ReservationVo {
+	private int movieReservNo;
+	private String movieReservDate;
+	private int memNo;
+	private String shcNo;
+	private int moviePrice;
+	private int movieHeadcount;
+
+	// 좌석 타입 (SEAT_TYPE)
+	private String seattypeCode;
+	private String seattypeName;
+	private int seattypePrice;
+
+	// 좌석 할인(SEAT_DISCOUNT)
+	private int seatDisNo;
+	private String seatDisName;
+	private int seatDisPrice;
+
+	// 좌석(SEAT)
+	private String seatNo;
+	private String seatRow;
+	private String seatCol;
+	private String roomType;
+
+	// 예약 좌석(RESERVED_SEAT)
+	private int soldout;
+
+	// 지점(SPOT)
+	private String spotCode;
+	private String spotName;
+	private String spotSite;
+	private String regNo;
+	private String mngNo;
+
+	// 지역(REGION)
+	private String regName;
+
+	// 상영관(MOVIE_ROOM)
+	private String roomNum;
+	private String roomNAame;
+
+	// 스케줄(schedule)
+	private String schNo;
+	private String schDate;
+	private String movieStart;
+	private String movieEnd;
+	private String movieNo;
+
+}

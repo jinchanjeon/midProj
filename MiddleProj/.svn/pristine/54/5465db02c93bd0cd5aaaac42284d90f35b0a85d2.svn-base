@@ -1,0 +1,58 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.BoardServiceImpl;
+import kr.or.ddit.service.iBoardService;
+import kr.or.ddit.vo.BoardVo;
+
+@WebServlet("/boardWrite.do")
+public class BoardWriteController extends HttpServlet {
+    private iBoardService boardService = BoardServiceImpl.getInstance();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 게시물 작성 페이지 로드
+    	List<BoardVo> categoryList = boardService.cateList();
+        req.setAttribute("categoryList", categoryList);
+        
+        req.getRequestDispatcher("/WEB-INF/view/boardWrite.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 게시물 저장 처리
+        String boardCode = req.getParameter("board_code");
+        String title = req.getParameter("board_title");
+        String content = req.getParameter("board_content");
+        
+        // TODO: 로그인 구현 후 세션에서 사용자 정보 가져오기
+        // String memNo = (String) req.getSession().getAttribute("mem_no");
+        String memNo = "1"; // 임시로 1로 설정
+        
+        BoardVo newBoard = new BoardVo();
+        newBoard.setBoard_code(boardCode);
+        newBoard.setBoard_title(title);
+        newBoard.setBoard_content(content);
+        newBoard.setMem_no(memNo);
+        
+        boolean result = boardService.insertBoard(newBoard);
+        
+        if (!result) {
+            // 실패 시 카테고리 목록을 다시 가져와서 설정
+            List<BoardVo> categoryList = boardService.cateList();
+            req.setAttribute("categoryList", categoryList);
+            req.setAttribute("error", "게시물 작성에 실패했습니다.");
+            req.setAttribute("board", newBoard);
+            req.getRequestDispatcher("/WEB-INF/view/boardWrite.jsp").forward(req, resp);
+        } else {
+            resp.sendRedirect("/MiddleProj/board.do");
+        }
+    }
+}

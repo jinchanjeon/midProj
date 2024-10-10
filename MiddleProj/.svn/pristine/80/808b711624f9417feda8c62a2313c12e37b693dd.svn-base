@@ -1,0 +1,8 @@
+package kr.or.ddit.dao;
+
+public interface MovieScheduleDao {
+    void addSchedule();
+    void updateSchedule();
+    void deleteSchedule();
+    void listSchedules();
+}

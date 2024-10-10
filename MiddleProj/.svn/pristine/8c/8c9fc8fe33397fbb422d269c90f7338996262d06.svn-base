@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="movie">
+	<resultMap type="MovieVO" id="movieMap"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="movieNo" column="movie_no" />
+		<result property="movieName" column="movie_name" />
+		<result property="moviePoster" column="movie_poster" />
+		<result property="movieCompany" column="movie_company" />
+		<result property="movieRelease" column="movie_release" />
+		<result property="movieCountry" column="movie_country" />
+		<result property="movieContent" column="movie_content" />
+		<result property="movieRunningtime" column="movie_runningtime" />
+		<result property="movieTrailer" column="movie_trailer" />
+		<result property="movieLevel" column="movie_level" />
+		<result property="movieState" column="movie_state" />
+	</resultMap>
+
+	<resultMap type="BoxofficeVO" id="boxMap"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="movieName" column="movie_name" />
+		<result property="releaseDate" column="movie_poster" />
+		<result property="boxofficeDate" column="movie_company" />
+		<result property="totalPeople" column="movie_release" />
+		<result property="todayPeople" column="movie_country" />
+	</resultMap>
+
+	<resultMap type="GenreVO" id="genreMap"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="genNo" column="gen_no" />
+		<result property="genName" column="gen_name" />
+	</resultMap>
+	<resultMap type="actorVO" id="actorMap"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="actNo" column="act_no" />
+		<result property="actName" column="act_name" />
+	</resultMap>
+	<resultMap type="MAVO" id="maMap"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="actNo" column="act_no" />
+		<result property="movieNo" column="movie_no" />
+	</resultMap>
+
+	<resultMap type="MGVO" id="mgMap"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="genNo" column="gen_no" />
+		<result property="movieNo" column="movie_no" />
+	</resultMap>
+
+	<resultMap type="MDVO" id="mdMap"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="dirNo" column="dir_no" />
+		<result property="movieNo" column="movie_no" />
+	</resultMap>
+
+	<resultMap type="DirVO" id="dirMap"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="dirNo" column="dir_no" />
+		<result property="dirName" column="dir_name" />
+	</resultMap>
+
+	<select id="movieList" parameterType="MovieVo"
+		resultMap="movieMap">
+		SELECT *
+		FROM (
+		SELECT ROWNUM RN, A.*
+		FROM (
+		SELECT *
+		FROM MOVIE M
+		<if test="search != null and search != ''">
+			WHERE MOVIE_NAME LIKE '%' || REPLACE(#{search}, ' ', '')
+			|| '%'
+		</if>
+		ORDER BY movie_release DESC
+		) A
+		)
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+
+
+
+	<select id="getTotal" resultType="int">
+		select count(*) from movie
+	</select>
+
+
+
+	<insert id="insertMovie" parameterType="MovieVO">
+		INSERT INTO
+		MOVIE(MOVIE_NO, MOVIE_NAME, MOVIE_POSTER, MOVIE_COMPANY,
+		MOVIE_RELEASE,
+		MOVIE_COUNTRY, MOVIE_CONTENT, MOVIE_RUNNINGTIME,
+		MOVIE_TRAILER,
+		MOVIE_LEVEL, MOVIE_STATE)
+		VALUES(#{movieNo},#{movieName},#{moviePoster},#{movieCompany},#{movieRelease},
+		#{movieCountry},#{movieContent},
+		#{movieRunningtime},#{movieTrailer},#{movieLevel},#{movieState})
+	</insert>
+
+	<select id="getMovie" parameterType="MovieVO"
+		resultMap="movieMap">
+		SELECT * FROM MOVIE WHERE MOVIE_NO=#{movieNo}
+	</select>
+
+	<select id="getMovieName" parameterType="MovieVO"
+		resultMap="movieMap">
+		SELECT * FROM MOVIE WHERE MOVIE_NAME=#{movieName}
+	</select>
+
+	<insert id="insertbox" parameterType="BoxofficeVO">
+		INSERT INTO
+		BOXOFFICE(boxcode, movie_name, release_date, boxoffice_date,
+		rank,
+		total_people, today_people)
+		VALUES(boxoffice_seq.NEXTVAL, #{movieName},
+		#{releaseDate},
+		#{boxofficeDate}, #{rank}, #{totalPeople},
+		#{todayPeople})
+	</insert>
+
+	<select id="getMovieNameRelease" parameterType="MovieVO"
+		resultMap="movieMap">
+		SELECT * FROM MOVIE WHERE MOVIE_NAME=#{movieName} AND
+		MOVIE_RELEASE=#{movieRelease}
+	</select>
+
+	<select id="boxList" resultMap="boxMap">
+		SELECT * FROM BOXOFFICE
+		WHERE
+		BOXOFFICE_DATE = TO_NUMBER(TO_CHAR(TRUNC(SYSDATE) - 1, 'YYYYMMDD'))
+	</select>
+
+	<select id="boxInfo" resultMap="movieMap">
+		select m.*
+		from movie m join boxoffice b
+		on m.movie_name = b.movie_name
+		and m.movie_release = b.release_date
+		and b.BOXOFFICE_DATE = TO_NUMBER(TO_CHAR(TRUNC(SYSDATE)-
+		1, 'YYYYMMDD'))
+		order by b.rank
+
+	</select>
+
+	<select id="boxOfficeExists" resultMap="boxMap"
+		parameterType="String">
+		SELECT * FROM BOXOFFICE
+		WHERE boxoffice_date =
+		TO_NUMBER(TO_CHAR(TRUNC(SYSDATE) - 1, 'YYYYMMDD'))
+		AND movie_name =
+		#{movieName}
+	</select>
+
+	<select id="selectGenre" resultType="int" parameterType="String">
+		select
+		gen_no from genre where gen_name=#{genName}
+	</select>
+
+	<insert id="insertGenre" parameterType="String">
+		insert into genre
+		values((select nvl(max(gen_no),0)+1 from genre),#{genName})
+	</insert>
+
+	<insert id="insertMovGen" parameterType="MGVO">
+		insert into
+		mov_gen(gen_no, movie_no)
+		values(#{genNo},#{movieNo})
+	</insert>
+
+	<insert id="insertMovDir" parameterType="MDVO">
+		insert into
+		movie_dir(dir_no, movie_no)
+		values(#{dirNo},#{movieNo})
+	</insert>
+
+	<insert id="insertDir" parameterType="DirVO">
+		insert into
+		director(dir_no, dir_name)
+		values(#{dirNo},#{dirName})
+	</insert>
+
+	<select id="selectDir" resultMap="dirMap" parameterType="int">
+		select
+		*
+		from director where dir_no=#{dirNo}
+	</select>
+
+	<select id="getMovGen" parameterType="MGVO" resultMap="mgMap">
+		SELECT *
+		FROM mov_gen WHERE gen_no = #{genNo} AND movie_no = #{movieNo}
+	</select>
+
+	<select id="getMovDir" parameterType="MDVO" resultMap="mdMap">
+		SELECT *
+		FROM movie_dir WHERE dir_no = #{dirNo} AND movie_no = #{movieNo}
+	</select>
+
+
+	<insert id="insertMovAct" parameterType="MAVO">
+		insert into
+		movie_act(act_no, movie_no)
+		values(#{actNo},#{movieNo})
+	</insert>
+
+	<insert id="insertAct" parameterType="actorVO">
+		insert into
+		actor(act_no,
+		act_name)
+		values(#{actNo},#{actName})
+	</insert>
+
+	<select id="selectAct" resultMap="actorMap" parameterType="int">
+		select
+		* from actor where act_no=#{actNo}
+	</select>
+
+
+	<select id="getMovAct" parameterType="MAVO" resultMap="maMap">
+		SELECT *
+		FROM movie_act WHERE act_no = #{actNo} AND movie_no = #{movieNo}
+	</select>
+
+
+	<select id="getMoviesByGenre" resultType="MovieVO"
+		parameterType="MovieVo">
+		SELECT *
+		FROM (
+		SELECT ROWNUM RN, A.*
+		FROM (
+		SELECT M.*, G.*
+		FROM MOVIE M
+		JOIN MOV_GEN MG ON M.MOVIE_NO = MG.MOVIE_NO
+		JOIN GENRE G ON
+		MG.GEN_NO = G.GEN_NO
+		WHERE MG.GEN_NO = #{genNo}
+		ORDER BY M.MOVIE_RELEASE
+		DESC
+		) A
+		)
+		WHERE RN BETWEEN #{start} AND #{end}
+
+	</select>
+
+	<select id="selectAllGen" resultMap="genreMap">
+		select * from genre
+	</select>
+
+	<select id="selectGenFromMovNo" resultMap="genreMap"
+		parameterType="String">
+		SELECT g.gen_name
+		FROM genre g
+		JOIN mov_gen mg ON g.gen_no
+		= mg.gen_no
+		JOIN movie m ON mg.movie_no = m.movie_no
+		WHERE m.movie_no
+		=#{movieNo}
+	</select>
+
+	<select id="selectActFromMovNo" resultMap="actorMap"
+		parameterType="String">
+		SELECT a.act_name
+		FROM actor a
+		JOIN movie_act ma ON
+		a.act_no = ma.act_no
+		JOIN movie m ON ma.movie_no = m.movie_no
+		WHERE
+		m.movie_no =#{movieNo}
+	</select>
+
+	<select id="selectDirFromMovNo" resultMap="dirMap"
+		parameterType="String">
+		SELECT d.dir_name
+		FROM director d
+		JOIN movie_dir md ON
+		d.dir_no = md.dir_no
+		JOIN movie m ON md.movie_no = m.movie_no
+		WHERE
+		m.movie_no =#{movieNo}
+	</select>
+
+	<select id="getMoviesByGenreAndSearch" resultType="MovieVO"
+		parameterType="MovieVo">
+		SELECT *
+		FROM (
+		SELECT ROWNUM RN, A.*
+		FROM (
+		SELECT M.*
+		FROM MOVIE M
+		JOIN
+		MOV_GEN MG ON M.MOVIE_NO = MG.MOVIE_NO
+		JOIN GENRE G ON MG.GEN_NO =
+		G.GEN_NO
+		WHERE MG.GEN_NO = #{genNo}
+		<if test="search != null and search != ''">
+			AND M.MOVIE_NAME LIKE '%' || #{search} || '%'
+		</if>
+		ORDER BY M.MOVIE_RELEASE DESC
+		) A
+		)
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+
+	<select id="getMoviesBySearch" resultType="MovieVO"
+		parameterType="MovieVo">
+		SELECT *
+		FROM (
+		SELECT ROWNUM RN, A.*
+		FROM (
+		SELECT *
+		FROM
+		MOVIE M
+		WHERE M.MOVIE_NAME LIKE LIKE '%' || #{search} || '%'
+		ORDER BY
+		M.MOVIE_RELEASE DESC
+		) A
+		)
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+
+	<update id="updateMovie" parameterType="MovieVo">
+		UPDATE MOVIE
+		SET
+		MOVIE_NAME=#{movieName},
+		MOVIE_POSTER=#{moviePoster},
+		MOVIE_COMPANY=#{movieCompany},
+		MOVIE_RELEASE=#{movieRelease},
+		MOVIE_COUNTRY=#{movieCountry},
+		MOVIE_RUNNINGTIME=#{movieRunningtime},
+		MOVIE_TRAILER=#{movieTrailer},
+		MOVIE_LEVEL=#{movieLevel},
+		MOVIE_STATE=#{movieState},
+		MOVIE_CONTENT=#{movieContent}
+		WHERE
+		MOVIE_NO=#{movieNo}
+	</update>
+
+
+	<select id="selmoviebygen" parameterType="String" resultMap="movieMap">
+		SELECT *
+		FROM (
+			SELECT a.movie_name, a.movie_no
+			FROM (
+				SELECT m.movie_no, m.movie_name,m.movie_release, g.*
+				FROM movie m
+				JOIN mov_gen mg ON m.movie_no = mg.movie_no
+				JOIN genre g ON mg.gen_no = g.gen_no
+				) a
+			WHERE a.gen_name = #{genName}
+			ORDER BY a.movie_release DESC
+			)
+		WHERE ROWNUM &lt;= 10
+
+	</select>
+
+<select id="selgenbymovie" parameterType="String" resultMap="genreMap">
+	SELECT a.gen_name
+    FROM (
+        SELECT m.movie_no, m.movie_name,m.movie_release, g.*
+        FROM movie m 
+        JOIN mov_gen mg ON m.movie_no = mg.movie_no
+        JOIN genre g ON mg.gen_no = g.gen_no
+    ) a
+    WHERE a.movie_no=#{movieNo}
+</select>
+
+</mapper>

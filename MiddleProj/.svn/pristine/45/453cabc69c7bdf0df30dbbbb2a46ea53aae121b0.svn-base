@@ -1,0 +1,27 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class StoreVo {
+	
+	private String product_id;
+	private String store_id;
+	private String product_name;
+	private int price;
+	private int stock;
+	
+	private String category_id;
+	private String category_name;
+	
+	private int product_price;
+	private String product_composition;
+	private String expiration_date;
+	private String origin;
+	private int purchase_quantity;
+	private String introduction;
+	private String usage_guide;
+	private String cancellation_policy;
+	private String minor_rights_protection;
+	private String dispute_resolution;
+}

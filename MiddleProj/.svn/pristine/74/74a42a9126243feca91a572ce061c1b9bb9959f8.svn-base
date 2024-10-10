@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Seat">
+
+	<resultMap type="ReservationVo" id="reservationVo">
+		<result property="movieReservNo" column="movie_reserv_no" />
+		<result property="movieReservDate" column="movie_reserv_date" />
+		<result property="memNo" column="mem_no" />
+		<result property="shcNo" column="shc_no" />
+		<result property="moviePrice" column="movie_price" />
+		<result property="movieHeadcount" column="movie_headcount" />
+		<result property="seatNo" column="seat_no" />
+		<result property="spotCode" column="spot_code" />
+		<result property="spotName" column="spot_name" />
+	</resultMap>
+	
+	<resultMap type="MovieVo" id="movieVo">
+			<result property="movieNo" column="movie_no" />
+	</resultMap>
+
+	<!-- 영화 별 극장 리스트 조회 -->
+	<select id="selectRegionByMovie" parameterType="MovieVo"
+		resultMap="reservationVo">
+		SELECT R.REG_NAME
+		FROM SCHEDULE S
+		JOIN MOVIE_ROOM MR ON S.ROOM_NUM = MR.ROOM_NUM
+		JOIN SPOT SP ON MR.SPOT_CODE = SP.SPOT_CODE
+		JOIN REGION R ON SP.REG_NO = R.REG_NO
+		WHERE S.MOVIE_NO = #{movieNo};
+	</select>
+	
+	<!-- 지역 별 극장 리스트 조회 -->
+	<select id="selectSpotByReg" parameterType="ReservationVo"
+		resultMap="reservationVo">
+		SELECT *
+		FROM SPOT
+		WHERE REG_NO =#{regNo};
+	</select>
+
+	<!-- 특정 스케줄의 모든 좌석 -->
+	<select id="selectSeatsBySch" parameterType="ReservationVo"
+		resultMap="reservationVo">
+		SELECT *
+		FROM RESERVED_SEAT
+		WHERE SCH_NO = #{schNo}
+	</select>
+
+</mapper>

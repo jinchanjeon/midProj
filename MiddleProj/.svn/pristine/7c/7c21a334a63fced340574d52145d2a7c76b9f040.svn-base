@@ -1,0 +1,253 @@
+@charset "EUC-KR";
+
+        * {
+            font-size: 11px;
+        }
+
+        body {
+            background-color: #FDFCF0;
+        }
+
+        .reserve-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            height: 680px;
+        }
+
+        .reserve-container > div {
+            border: 1px solid #dddddd;
+        }
+
+		 .movie-part {
+		            display: flex;
+		            flex-direction: column;
+		            width: 264px;
+		        }
+		        
+        .theater-part {
+            display: flex; /* Flexbox 사용하여 지역과 극장 나란히 배치 */
+            flex-direction: column; /* 세로 방향으로 나열 */
+            width: 264px; /* 전체 너비 사용 */
+        
+        }
+
+        .reserve-title {
+            border-bottom: 1px solid #dddddd;
+            background-color: #444444;
+            text-align: center;
+            color: #dddddd;
+            padding: 5px;
+            font-size: 13px;
+            font-weight: bold;
+            height: 25px; /* 다른 title과 같은 높이 설정 */
+			min-height: 25px; /* 최소 높이 설정 */
+            
+        }
+
+        .list-container {
+            display: flex; /* 지역과 극장을 나란히 배치 */
+/*             justify-content: space-between; */
+            width: 100%; /* 전체 너비 사용 */
+            height: 745px;
+            
+        }
+
+        .theater-part > .region-list,
+        .theater-part > .theater-list {
+            width: 264px; /* 각각 너비 설정 */
+            overflow: hidden; /* 스크롤 제거 */
+        }
+		.region-list{
+			width: 40%;
+		}
+		
+		.movie-item {
+		    display: flex; /* Flexbox 사용 */
+		    padding: 10px;
+		    background-color: #FDFCF0; /* 기본 배경색 */
+		    margin: 5px 0; /* 위 아래 마진 */
+		    cursor: pointer;
+		    transition: background-color 0.3s;
+		    border: none; /* 테두리 제거 */
+		}
+
+		.region-list,
+		.movie-list {
+    		ist-style-type: none; /* 기본 리스트 스타일 제거 */
+  			padding: 0; /* 기본 패딩 제거 */
+   			margin: 0; /* 기본 마진 제거 */
+		}
+
+		.region-item {
+		    display: flex; /* Flexbox 사용 */
+		    justify-content: flex-end; /* 텍스트를 오른쪽으로 정렬 */
+		    padding: 10px;
+		    background-color: #FDFCF0; /* 기본 배경색 */
+		    margin: 5px 0; /* 위 아래 마진 */
+		    cursor: pointer;
+		    transition: background-color 0.3s;
+		    border: none; /* 테두리 제거 */
+		    text-align: right; /* 텍스트 오른쪽 정렬 (여기서 불필요) */
+		}
+		
+        .theater-list {
+            overflow: scroll; /* 스크롤 추가 */
+            overflow-x: hidden; /* 가로 스크롤 숨김 */
+            width: 60%;
+        }
+        
+        .theater-list, .reserve-date {
+		    max-height: 641px; /* 스크롤이 필요한 경우의 높이 설정 */
+		}
+        
+        .theater-list::-webkit-scrollbar {
+		    width: 8px; /* 스크롤바 넓이 설정 */
+		}
+		.reserve-date::-webkit-scrollbar {
+		    width: 8px; /* 스크롤바 넓이 설정 */
+		}
+		
+        /* 스크롤바 트랙 (배경) */
+        .theater-list::-webkit-scrollbar-track {
+		    background: #f1f1f1; /* 트랙 배경색 */
+		    border-radius: 10px; /* 모서리 둥글게 */
+		}
+		.reserve-date::-webkit-scrollbar-thumb {
+		    background: #888; /* 핸들 배경색 */
+		    border-radius: 10px; /* 모서리 둥글게 */
+		    transition: background-color 0.3s; /* 배경색 전환 부드럽게 */
+		}
+		
+		/* 스크롤바 핸들 (움직이는 부분) */
+		.theater-list::-webkit-scrollbar-thumb {
+		    background: #888; /* 핸들 배경색 */
+		    border-radius: 10px; /* 모서리 둥글게 */
+		    transition: background-color 0.3s; /* 배경색 전환 부드럽게 */
+		}
+		.reserve-date::-webkit-scrollbar-thumb {
+		    background: #888; /* 핸들 배경색 */
+		    border-radius: 10px; /* 모서리 둥글게 */
+		    transition: background-color 0.3s; /* 배경색 전환 부드럽게 */
+		}
+		
+
+        .region-list,
+        .theater-list,
+        .movie-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .region-item,
+        .theater-item,
+        .movie-item {
+            padding: 10px;
+            background-color: #FDFCF0; /* 기본 배경색 */
+            margin: 5px 0; /* 위 아래 마진 */
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none; /* 테두리 제거 */
+        }
+
+        .region-item:hover,
+        .theater-item:hover,
+        .movie-item:hover {
+            background-color: #ddd; /* 마우스 오버 시 배경색 */
+        }
+
+        .region-item.selected{
+            background-color: #4caf50; /* 선택된 항목 배경색 */
+            color: white; /* 선택된 항목 글자색 */
+        }
+		        .theater-item.selected{
+            background-color: #4caf50; /* 선택된 항목 배경색 */
+            color: white; /* 선택된 항목 글자색 */
+        }
+        .movie-item.selected {
+            background-color: #4caf50; /* 선택된 항목 배경색 */
+            color: white; /* 선택된 항목 글자색 */
+        }
+        .day-part {
+            width: 91px;
+        }
+
+        .reserve-date {
+            width: 100%; /* 전체 너비 사용 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 641px;
+            max-height: 641px; /* 스크롤이 필요한 경우의 높이 설정 */
+            overflow: auto;
+            overflow-x: hidden;
+        }
+
+        .movie-date-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px 5px;
+            background-color: #FDFCF0; /* body와 같은 배경색 */
+            border: none; /* 테두리 제거 */
+        }
+
+        .movie-week-of-day {
+            margin-left: 5px;
+            font-size: 10px;
+            width: 12px;
+            height: 22px;
+            line-height: 22px;
+        }
+
+        .movie-day {
+            text-align: center;
+            width: 34px;
+            height: 22px;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .saturday {
+            color: #31597E;
+            font-weight: bold;
+        }
+
+        .sunday {
+            color: #AF2D2D;
+            font-weight: bold;
+        }
+
+        .movie-date-wrapper.selected {
+            background-color: #4caf50; /* 선택된 날짜 배경색 */
+            color: white; /* 선택된 날짜 글자색 */
+        }
+
+        .movie-date-wrapper:hover {
+            background-color: #ddd; /* 마우스 오버 시 배경색 */
+        }
+        .time-part {
+          width: 384px;
+        }
+        .schedule-select {
+		    background-color: #FDFCF0; /* 페이지 배경색과 동일하게 */
+    		border: 1px solid #ddd; /* 테두리 색상 */
+		    cursor: pointer;
+		    padding: 10px;
+		    transition: background-color 0.3s; /* 클릭할 때 배경색 변화 */
+		}
+
+		/* 클릭했을 때 선택된 버튼의 배경색 */
+		.schedule-select.selected {
+		    background-color: #4CAF50; /* 클릭했을 때의 색상 (예: 초록색) */
+		    color: white;
+		}
+		.room-name{
+    		font-weight: bold; /* 글씨를 두껍게 설정 */
+		}
+
+		.schedule-list {
+		    list-style-type: none; /* 기본 리스트 스타일 제거 */
+		    margin: 20px 0;
+		}

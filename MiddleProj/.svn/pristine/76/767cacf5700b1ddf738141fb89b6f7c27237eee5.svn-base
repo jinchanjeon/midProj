@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="myticket">
+	<resultMap type="MyticketVo" id="myticketVo"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="memNo" column="mem_no" />
+		<result property="spotName" column="spot_name" />
+		<result property="roomName" column="room_name" />
+		<result property="movieName" column="movie_name" />
+		<result property="seatNo" column="seat_no" />
+		<result property="movieReservDate" column="movie_reserv_date" />
+		<result property="movieStart" column="movie_start" />
+		<result property="movieEnd" column="movie_end" />
+		<result property="moviePrice" column="movie_price" />
+	</resultMap>
+
+	<select id="myticket" resultMap="myticketVo" parameterType="String">
+		SELECT * FROM MYTICKET 
+		WHERE MEM_NO = '${memNo}'
+	</select>
+
+	
+</mapper>

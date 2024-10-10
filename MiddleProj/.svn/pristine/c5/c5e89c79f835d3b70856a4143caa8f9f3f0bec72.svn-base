@@ -1,0 +1,31 @@
+package kr.or.ddit.movie.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import kr.or.ddit.movie.Inventory;
+
+public class InventoryDao {
+    private List<Inventory> inventories = new ArrayList<>();
+
+    public void addInventory(Inventory inventory) {
+        inventories.add(inventory);
+    }
+
+    public void updateInventory(int id, Inventory inventory) {
+        for (int i = 0; i < inventories.size(); i++) {
+            if (inventories.get(i).getId() == id) {
+                inventories.set(i, inventory);
+                break;
+            }
+        }
+    }
+
+    public void deleteInventory(int id) {
+        inventories.removeIf(inventory -> inventory.getId() == id);
+    }
+
+    public List<Inventory> getAllInventories() {
+        return inventories;
+    }
+}

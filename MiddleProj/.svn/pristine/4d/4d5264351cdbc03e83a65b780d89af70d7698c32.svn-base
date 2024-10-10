@@ -1,0 +1,45 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ManageVo;
+import kr.or.ddit.vo.MemberVo;
+import kr.or.ddit.vo.SpotVo;
+
+public interface iMemberService {
+
+	//로그인 검증
+	public MemberVo login(MemberVo member);
+
+	//회원 가입
+	public int join(MemberVo member);
+
+	//아이디 찾기
+	public MemberVo findId(MemberVo memberVo);
+
+	//아이디로 회원번호 찾기
+	public int selectMemNo(String memId);
+	
+	//비밀번호 찾기
+	public MemberVo findPw(MemberVo memberVo);
+
+	//개인정보 수정
+	public int update(MemberVo member);
+	
+	public List<MemberVo> selectMem(int memCode);
+
+
+	//회원 탈퇴처리
+	public int withdraw(MemberVo member);
+	public MemberVo selectMembyId(String id);
+
+	public void insertManager(MemberVo member);
+	public void updateManager(MemberVo member);
+	public MemberVo selectByNo(int memNo);
+
+	public void manager(ManageVo manager);
+
+	public void updateMng(ManageVo manage);
+
+	public ManageVo selMng(int memNo);
+}

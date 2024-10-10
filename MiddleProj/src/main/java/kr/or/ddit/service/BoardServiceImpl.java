@@ -1,0 +1,165 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.dao.BoardDaoImpl;
+import kr.or.ddit.dao.iBoardDao;
+import kr.or.ddit.vo.BoardVo;
+
+public class BoardServiceImpl implements iBoardService {
+
+    private static BoardServiceImpl instance;
+    private iBoardDao boardDao;
+
+    private BoardServiceImpl() {
+        boardDao = BoardDaoImpl.getInstance();
+    }
+
+    public static BoardServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new BoardServiceImpl();
+        }
+        return instance;
+    }
+
+    @Override
+    public List<BoardVo> cateList() {
+        System.out.println("BoardServiceImpl: cateList 호출");
+        long startTime = System.currentTimeMillis();
+        List<BoardVo> result = boardDao.cateList();
+        long endTime = System.currentTimeMillis();
+        System.out.println("BoardServiceImpl: cateList 완료, 소요 시간: " + (endTime - startTime) + "ms");
+        
+        if (result != null) {
+            for (BoardVo board : result) {
+                System.out.println("Category: " + board.getCode_name() + ", Board Code: " + board.getBoard_code());
+            }
+        } else {
+            System.out.println("BoardServiceImpl: cateList 결과가 null입니다.");
+        }
+        
+        return result;
+    }
+
+    @Override
+    public List<BoardVo> getAllBoards() {
+        long startTime = System.currentTimeMillis();
+        System.out.println("BoardServiceImpl: getAllBoards 호출");
+        List<BoardVo> result = boardDao.getAllBoards();
+        long endTime = System.currentTimeMillis();
+        System.out.println("BoardServiceImpl: getAllBoards 완료, 소요 시간: " + (endTime - startTime) + "ms");
+        
+        // 결과 로깅 추가
+        if (result != null) {
+            for (BoardVo board : result) {
+                System.out.println("Board: " + board.getBoard_no() + ", Title: " + board.getBoard_title() + ", Writer: " + board.getWriter());
+            }
+        } else {
+            System.out.println("BoardServiceImpl: getAllBoards 결과가 null입니다.");
+        }
+        
+        return result;
+    }
+    
+    @Override
+    public List<BoardVo> boardList(String boardCode) {
+        System.out.println("BoardServiceImpl: boardList 호출 with boardCode = " + boardCode);
+        List<BoardVo> result = boardDao.boardList(boardCode);
+        System.out.println("BoardServiceImpl: boardList 결과 = " + result);
+        return result;
+    }
+    
+    @Override
+    public List<BoardVo> boardList(int cateNo) {
+        System.out.println("BoardServiceImpl: boardList called with cateNo = " + cateNo);
+        return boardDao.boardList(cateNo);
+    }
+
+    @Override
+    public BoardVo boardDetail(int board_no) {
+        System.out.println("BoardServiceImpl: boardDetail called with board_no = " + board_no);
+        return boardDao.boardDetail(board_no);
+    }
+
+    
+
+    
+
+    @Override
+    public List<BoardVo> getBoardListByCodeString(String boardCode) {
+        System.out.println("BoardServiceImpl: getBoardListByCodeString called with boardCode = " + boardCode);
+        return boardDao.getBoardListByCodeString(boardCode);
+    }
+
+    @Override
+    public List<BoardVo> getBoardListByCodeNumber(int boardCode) {
+        System.out.println("BoardServiceImpl: getBoardListByCodeNumber called with boardCode = " + boardCode);
+        return boardDao.getBoardListByCodeNumber(boardCode);
+    }
+
+    @Override
+    public BoardVo getBoard(String boardNo) {
+        System.out.println("BoardServiceImpl: getBoard 호출 with boardNo = " + boardNo);
+        BoardVo result = boardDao.getBoard(boardNo);
+        System.out.println("BoardServiceImpl: getBoard 결과 = " + result);
+        return result;
+    }
+    
+    public int getSimpleBoardList() {
+        System.out.println("BoardServiceImpl: getSimpleBoardList 호출");
+        int count = boardDao.getSimpleBoardList();
+        System.out.println("BoardServiceImpl: 게시글 수 = " + count);
+        return count;
+    }
+
+    @Override
+    public void incrementBoardCount(String boardNo) {
+        System.out.println("BoardServiceImpl: Incrementing board count for boardNo = " + boardNo);
+        boardDao.incrementBoardCount(boardNo);
+    }
+    
+    @Override
+    public boolean insertBoard(BoardVo board) {
+        System.out.println("BoardServiceImpl: insertBoard called");
+        return boardDao.insertBoard(board);
+    }
+    
+    @Override
+    public boolean updateBoard(BoardVo board) {
+        return boardDao.updateBoard(board) > 0;
+    }
+
+    @Override
+    public boolean deleteBoard(String boardNo) {
+    	System.out.println("Deleting board in service: " + boardNo); 
+        int result = boardDao.deleteBoard(boardNo);
+        return boardDao.deleteBoard(boardNo) > 0;
+    }
+
+	@Override
+	public BoardVo myqna(String boardNo) {
+		return boardDao.myqna(boardNo);
+	}
+
+	@Override
+	public List<BoardVo> myboard(int memNo) {
+		return boardDao.myboard(memNo);
+	}
+
+	@Override
+	public List<BoardVo> getAllBoards(Map<String, Object> paramMap) {
+	    System.out.println("BoardServiceImpl: getAllBoards 호출 with params: " + paramMap);
+	    List<BoardVo> result = boardDao.getAllBoards(paramMap);
+	    System.out.println("BoardServiceImpl: getAllBoards 결과 크기 = " + (result != null ? result.size() : "null"));
+	    return result;
+	}
+
+	@Override
+	public int getTotalBoardCount() {
+	    System.out.println("BoardServiceImpl: getTotalBoardCount 호출");
+	    int count = boardDao.getTotalBoardCount();
+	    System.out.println("BoardServiceImpl: 총 게시글 수 = " + count);
+	    return count;
+	}
+}

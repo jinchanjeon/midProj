@@ -1,0 +1,18 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ProductVO;
+
+public interface ProductService {
+
+    void addProduct(ProductVO product);
+
+    void updateProduct(ProductVO product);
+
+    void deleteProduct(String productId);
+
+    ProductVO getProductById(String productId);
+
+    List<ProductVO> getAllProducts();
+}

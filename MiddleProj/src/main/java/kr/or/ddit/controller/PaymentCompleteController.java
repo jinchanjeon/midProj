@@ -1,0 +1,57 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.PaymentServiceImpl;
+import kr.or.ddit.service.iPaymentService;
+import kr.or.ddit.vo.ProdPayVo;
+@WebServlet("/payment/complete")
+public class PaymentCompleteController extends HttpServlet {
+    iPaymentService paymentService = PaymentServiceImpl.getInstance();
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String merchant_uid = request.getParameter("merchant_uid");
+        String amstr = request.getParameter("totalAmount");
+        int amount = Integer.parseInt(amstr);
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+        String imp_uid = request.getParameter("imp_uid");
+        
+        ProdPayVo payvo = new ProdPayVo();
+        payvo.setProdPayNo(imp_uid);
+        payvo.setOrderNo(merchant_uid);
+        payvo.setProdPayCreated(currentTimestamp);
+        payvo.setProdPayPrice(amount);
+        paymentService.insertPayment(payvo);
+        
+        System.out.println(payvo);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write("결제 완료 처리 성공");
+        
+        
+		/*
+		 * try { // 결제 검증 boolean isVerified = paymentService.verifyPayment(imp_uid,
+		 * amount, merchant_uid, currentTimestamp); if (isVerified) {
+		 * paymentService.insertPayment(payvo);
+		 * response.setStatus(HttpServletResponse.SC_OK);
+		 * response.getWriter().write("결제 완료 처리 성공");
+		 * 
+		 * } else { response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		 * response.getWriter().write("결제 확인 실패"); } } catch (IOException e) {
+		 * response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		 * response.getWriter().write("입출력 오류 발생"); } catch (Exception e) {
+		 * response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		 * response.getWriter().write("결제 확인 중 오류 발생"); }
+		 */
+    }
+}
+
+

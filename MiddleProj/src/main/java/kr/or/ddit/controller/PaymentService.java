@@ -1,0 +1,30 @@
+package kr.or.ddit.controller;
+import okhttp3.*;
+
+import java.io.IOException;
+
+public class PaymentService {
+    private static final String IMP_SECRET_KEY = "T3VN1AqXxks1EM6EqUXEZSWk2ip0za64Nz3cCoXWC5PH7VBN4IT0zJap3r5xd34kz0tbfCUt3uFYqA0Y";
+
+    public boolean verifyPayment(String imp_uid) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+            .url("https://api.iamport.kr/payments/" + imp_uid)
+            .addHeader("Authorization", IMP_SECRET_KEY)
+            .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                // 결제 확인 로직
+                String responseBody = response.body().string();
+                // JSON 파싱 및 결제 정보 처리
+                System.out.println(responseBody);
+                return true;
+            } else {
+            	 System.err.println("결제 검증 실패: " + response);
+                 return false;  // 결제 실패
+            }
+        }
+    }
+}

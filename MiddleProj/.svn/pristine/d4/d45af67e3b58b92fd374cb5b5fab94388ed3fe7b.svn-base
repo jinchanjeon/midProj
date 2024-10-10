@@ -1,0 +1,13 @@
+const banner = document.querySelector('.banner');
+
+banner.addEventListener('mouseover', () => {
+  banner.style.backgroundColor = '#e0e0e0';
+});
+
+banner.addEventListener('mouseout', () => {
+  banner.style.backgroundColor = '#f5f5f5';
+});
+
+banner.addEventListener('click', () => {
+  window.location.href = 'https://example.com/pointshop';
+});

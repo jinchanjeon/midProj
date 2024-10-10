@@ -1,0 +1,80 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <script src="https://cdn.ckeditor.com/ckeditor5/29.1.0/classic/ckeditor.js"></script>
+    <title>Submit Event</title>
+
+<style>
+.ck.ck-editor {
+    max-width: 500px;
+}
+.ck-editor__editable {
+    min-height: 300px;
+}
+#box{ 
+border:double; 
+height:200px; 
+ } 
+   </style>
+</head>
+<body>
+<!-- 	DROPBOX START -->
+  <div id="box">drop area</div>
+
+<script>
+  document.querySelector('div').addEventListener('dragover', function(e){
+		e.preventDefault();
+	});
+  document.querySelector('div').addEventListener('drop', function(e){
+		e.preventDefault();
+
+		console.log(e.dataTransfer.files[0].name); 
+
+		let picAll = e.dataTransfer.files;
+		for(let i = 0; i < picAll.length; i++ ){
+			let v_img = document.createElement('img'); 
+			v_img.alt = "imagge";
+			v_img.src = "../images/" + e.dataTransfer.files[i].name;
+			v_img.style.width = "100px";
+			this.append(v_img);
+		}
+		v_img.src = "../images/" + e.dataTransfer.files[0].name;
+		v_img.alt = "imagyyy";
+		v_img.style.width = "100px";
+
+		this.append(v_img); 
+	});
+
+  window.addEventListener('dragover', function(e){
+		e.preventDefault();
+	});
+  window.addEventListener('drop', function(e){
+		e.preventDefault();
+	});
+  </script>
+<!--    DROPBOX END -->
+
+	<input type="file">
+	<input type="button" value="add" id="add">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+	$('#add').on('click', function(){
+		let tag = "<div>";
+		tag += "<input type='file'>";
+		tag += "<input type='button' value='delete' onclick='f_del(this)'>";
+		tag += "</div>";
+		$('body').append(tag);
+
+	});
+
+	function f_del(p_this){
+		$(p_this).parent().remove();
+	}
+
+
+	</script>
+
+
+    
+</body>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.ddit.mapper.ProductMapper">
+
+    <!-- ProductVO와 테이블 컬럼 간 매핑 -->
+    <resultMap id="productResultMap" type="kr.or.ddit.vo.ProductVO">
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="quantity" column="quantity"/>
+        <result property="price" column="price"/>
+    </resultMap>
+
+    <!-- 상품 조회 -->
+    <select id="selectProductById" parameterType="String" resultMap="productResultMap">
+        SELECT * FROM product WHERE product_id = #{productId}
+    </select>
+
+    <!-- 모든 상품 조회 -->
+    <select id="getAllProducts" resultMap="productResultMap">
+        SELECT * FROM product
+    </select>
+
+    <!-- 상품 추가 -->
+    <insert id="insertProduct" parameterType="kr.or.ddit.vo.ProductVO">
+        INSERT INTO product (product_id, product_name, quantity, price)
+        VALUES (#{productId}, #{productName}, #{quantity}, #{price})
+    </insert>
+
+    <!-- 상품 수정 -->
+    <update id="updateProduct" parameterType="kr.or.ddit.vo.ProductVO">
+        UPDATE product
+        SET product_name = #{productName}, quantity = #{quantity}, price = #{price}
+        WHERE product_id = #{productId}
+    </update>
+
+    <!-- 상품 삭제 -->
+    <delete id="deleteProduct" parameterType="String">
+        DELETE FROM product WHERE product_id = #{productId}
+    </delete>
+
+</mapper>

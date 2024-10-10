@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="db.properties" />
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="autoMappingBehavior" value="FULL"/>
+    </settings>
+
+    <typeAliases>
+    	<typeAlias type="kr.or.ddit.vo.StoreVo" alias="StoreVo"/>
+        <typeAlias type="kr.or.ddit.vo.MemberVo" alias="MemberVO"/>
+        <typeAlias type="kr.or.ddit.vo.MovieVo" alias="MovieVO"/>
+        <typeAlias type="kr.or.ddit.vo.ReviewVo" alias="ReviewVO"/>
+        <typeAlias type="kr.or.ddit.vo.AttachFileVo" alias="fileVO"/>
+        <typeAlias type="kr.or.ddit.vo.BoardVo" alias="BoardVO"/>
+        <typeAlias type="kr.or.ddit.vo.BoxofficeVo" alias="BoxofficeVO"/>
+        <typeAlias type="kr.or.ddit.vo.EventVo" alias="EventVo"/>
+        <typeAlias type="kr.or.ddit.vo.GenreVo" alias="GenreVO"/>
+        <typeAlias type="kr.or.ddit.vo.MovGenVo" alias="MGVO"/>
+        <typeAlias type="kr.or.ddit.vo.MovieDirectorVo" alias="MDVO"/>
+        <typeAlias type="kr.or.ddit.vo.DirectorVo" alias="DirVO"/>
+        <typeAlias type="kr.or.ddit.vo.ActorVo" alias="actorVO"/>
+        <typeAlias type="kr.or.ddit.vo.MovieActorVo" alias="MAVO"/>
+        <typeAlias type="kr.or.ddit.vo.SpotVo" alias="spotVO"/>
+        <typeAlias type="kr.or.ddit.vo.ManageVo" alias="ManageVo"/>
+        <typeAlias type="kr.or.ddit.vo.CommentVo" alias="CommentVo"/>
+		<typeAlias type="kr.or.ddit.vo.TheaterVo" alias="TheaterVO"/>
+        <typeAlias type="kr.or.ddit.vo.ScheduleVo" alias="ScheduleVO"/>
+        <typeAlias type="kr.or.ddit.vo.MemberReview" alias="MemberReview"/>
+        <typeAlias type="kr.or.ddit.vo.TheaterVo" alias="TheaterVo"/>
+        <typeAlias type="kr.or.ddit.vo.SeatVo" alias="SeatVO" />
+        <typeAlias type="kr.or.ddit.vo.ProdVo" alias="ProdVo" />
+        <typeAlias type="kr.or.ddit.vo.ProdOrderVo" alias="ProdOrderVo" />
+        <typeAlias type="kr.or.ddit.vo.ProdPayVo" alias="ProdPayVo" />
+        <typeAlias type="kr.or.ddit.vo.ProdCartVo" alias="ProdCartVo" />
+        <typeAlias type="kr.or.ddit.vo.PurchaseVo" alias="PurchaseVo" />
+		<typeAlias type="kr.or.ddit.vo.MypurchaseVo" alias="MypurchaseVO" />
+        <typeAlias type="kr.or.ddit.vo.MyticketVo" alias="MyticketVo" />
+        <typeAlias type="kr.or.ddit.vo.ProductVo" alias="ProductVo"/>
+    </typeAliases>
+    
+    <environments default="dev">
+        <environment id="dev">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${user}"/>
+                <property name="password" value="${password}"/>
+                <!-- 활성화된 최대 커넥션 수 -->
+                <property name="poolMaximumActiveConnections" value="1"/>
+                <!-- 유휴상태에서의 최대 커넥션 수 -->
+                <property name="poolMaximumIdleConnections" value="1"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+	<mappers>
+		<mapper resource="mapper/member.xml" />
+		<mapper resource="mapper/memberReview.xml" />
+		<mapper resource="mapper/movie.xml" />
+		<mapper resource="mapper/board.xml" />
+		<mapper resource="mapper/review.xml" />
+		<mapper resource="mapper/event.xml" />
+		<mapper resource="mapper/store.xml"/> 
+		<mapper resource="mapper/TheaterMapper.xml"/> 
+		<mapper resource="mapper/RegionMapper.xml"/> 
+		<mapper resource="mapper/ScheduleMapper.xml"/>
+		<mapper resource="mapper/MovieMapper.xml"/>
+		<mapper resource="mapper/SeatMapper.xml" />
+		<mapper resource="mapper/payment.xml" />
+		<mapper resource="mapper/mypurchase.xml" />
+		<mapper resource="mapper/SeatMapper.xml" />
+		<mapper resource="mapper/Myticket.xml" />
+	</mappers>
+
+</configuration>

@@ -1,0 +1,110 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import kr.or.ddit.service.StoreServiceImpl;
+import kr.or.ddit.service.iStoreService;
+import kr.or.ddit.vo.StoreVo;
+
+@WebServlet("/storeCart.do")
+public class StoreCartController extends HttpServlet {
+    iStoreService storeService = StoreServiceImpl.getInstance();
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("StoreCartController: doGet 메소드 호출됨");
+        listCartItems(request, response);
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("StoreCartController: doPost 메소드 호출됨");
+        String action = request.getParameter("action");
+        switch (action) {
+            case "add":
+                addToCart(request, response);
+                break;
+            case "remove":
+                removeFromCart(request, response);
+                break;
+            case "update":
+                updateCartItem(request, response);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 액션");
+        }
+    }
+
+    private void addToCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("StoreCartController: addToCart 메소드 호출됨");
+        String productId = request.getParameter("productId");
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+        HttpSession session = request.getSession();
+        List<StoreVo> cartItems = (List<StoreVo>) session.getAttribute("cartItems");
+        if (cartItems == null) {
+            cartItems = new ArrayList<>();
+            session.setAttribute("cartItems", cartItems);
+        }
+
+        StoreVo product = storeService.getProductById(productId);
+        if (product != null) {
+            product.setQuantity(quantity);
+            cartItems.add(product);
+            System.out.println("상품이 장바구니에 추가됨: " + product.getProduct_name());
+        }
+
+        response.setContentType("application/json");
+        response.getWriter().write("{\"status\":\"success\", \"message\":\"상품이 장바구니에 추가되었습니다.\"}");
+    }
+
+    private void removeFromCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String productId = request.getParameter("productId");
+        HttpSession session = request.getSession();
+        List<StoreVo> cartItems = (List<StoreVo>) session.getAttribute("cartItems");
+        
+        if (cartItems != null) {
+            cartItems.removeIf(item -> item.getProduct_id().equals(productId));
+        }
+
+        response.setContentType("application/json");
+        response.getWriter().write("{\"status\":\"success\", \"message\":\"상품이 장바구니에서 제거되었습니다.\"}");
+    }
+
+    private void updateCartItem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String productId = request.getParameter("productId");
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        
+        HttpSession session = request.getSession();
+        List<StoreVo> cartItems = (List<StoreVo>) session.getAttribute("cartItems");
+        
+        if (cartItems != null) {
+            for (StoreVo item : cartItems) {
+                if (item.getProduct_id().equals(productId)) {
+                    item.setQuantity(quantity);
+                    break;
+                }
+            }
+        }
+
+        response.setContentType("application/json");
+        response.getWriter().write("{\"status\":\"success\", \"message\":\"장바구니 항목이 업데이트되었습니다.\"}");
+    }
+
+    private void listCartItems(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("StoreCartController: listCartItems 메소드 호출됨");
+        HttpSession session = request.getSession();
+        List<StoreVo> cartItems = (List<StoreVo>) session.getAttribute("cartItems");
+        if (cartItems == null) {
+            cartItems = new ArrayList<>();
+        }
+        request.setAttribute("cartItems", cartItems);
+        request.getRequestDispatcher("/WEB-INF/view/storeCart.jsp").forward(request, response);
+    }
+}

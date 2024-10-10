@@ -1,0 +1,79 @@
+package kr.or.ddit.controller;
+
+import java.io.File;
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import kr.or.ddit.service.EventServiceImpl;
+import kr.or.ddit.service.iEventService;
+import kr.or.ddit.vo.EventVo;
+@WebServlet("/eventInsert")
+@MultipartConfig
+public class EventInsertController extends HttpServlet{
+
+	iEventService eventService = EventServiceImpl.getInstance();
+//	String upload_dir = "../../../../../../../WebContent/resources/boogie/edu-meeting/assets/images/"; // init -> xml?
+//	String upload_dir = "/MiddleProj/WebContent/resources/boogie/edu-meeting/assets/images"; // init -> xml?
+//	String upload_dir = "upload_files"; // init -> xml?
+//	String upload_dir; // init -> xml?
+//	String upload_dir = "/WebContent/resources/boogie/edu-meeting/assets/images";
+
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String boardNo = req.getParameter("boardNo");
+//		
+		EventVo event = eventService.eventDetail(boardNo);
+//		
+		req.setAttribute("event", event);
+		
+		req.getRequestDispatcher("WEB-INF/view/eventInsert.jsp").forward(req, resp);
+				
+	
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		// Multipart parsing 전에 파라미터 조회해 보기
+		System.out.println("Multipart parsing 전 : " + req.getParameter("sender") );
+		
+		String uploadPath = req.getServletContext().getRealPath("/resources/boogie/edu-meeting/assets/images");
+		File uploadDir = new File(uploadPath);
+		
+		
+	    // 요청 파라미터 추출
+	    String title = req.getParameter("title");
+	    String content = req.getParameter("content");
+	    String boardStart = req.getParameter("boardStart");
+	    String boardEnd = req.getParameter("boardEnd");
+	    String memNo = req.getParameter("memNo");
+	    // 파일 파트 가져오기
+	 
+	    Part part = req.getPart("attachedFiles");
+	    part.write(uploadPath + "/" + part.getSubmittedFileName());
+	    System.out.println("upload_dir" + uploadPath);
+
+	    // 데이터베이스에 저장할 VO 생성 및 값 설정
+	    EventVo event = new EventVo();
+	    event.setBoardTitle(title);
+	    event.setBoardContent(content);
+	    event.setBoardImg(part.getSubmittedFileName()); // 파일명 저장
+	    event.setBoardStart("2024.04.10");
+	    event.setBoardEnd("2024.10.03");
+	    event.setMemNo(2);
+
+	    // 서비스 호출
+	    eventService.eventInsert(event);
+	    System.out.println("저장상태" + event);
+	    // 목록 페이지로 리다이렉트
+	    resp.sendRedirect(req.getContextPath() + "/eventList");
+	}
+
+}

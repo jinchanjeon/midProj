@@ -1,0 +1,31 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+import kr.or.ddit.dao.SeatDaoImpl;
+import kr.or.ddit.vo.ReservationVo;
+
+public class SeatServiceImpl implements iSeatService {
+    private static SeatServiceImpl instance;
+    private SeatDaoImpl seatDao;
+
+    private SeatServiceImpl() {
+        this.seatDao = new SeatDaoImpl(); // DAO 인스턴스 가져오기
+    }
+
+    public static SeatServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new SeatServiceImpl();
+        }
+        return instance;
+    }
+
+    @Override
+    public List<ReservationVo> getSeats(String schNo) {
+        return seatDao.getSeat(schNo); // DAO 메서드 호출
+    }
+
+    @Override
+    public void reserveSeats(List<ReservationVo> reservations) {
+        seatDao.saveSeats(reservations); // DAO 메서드 호출
+    }
+}

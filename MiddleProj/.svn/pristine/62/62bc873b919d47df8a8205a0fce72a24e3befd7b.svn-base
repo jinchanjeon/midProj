@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.ddit.mapper.SalesMapper">
+
+    <!-- SalesVO와 테이블 컬럼 간 매핑 -->
+    <resultMap id="salesResultMap" type="kr.or.ddit.vo.SalesVO">
+        <result property="saleId" column="sale_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="quantitySold" column="quantity_sold"/>
+        <result property="totalRevenue" column="total_revenue"/>
+        <result property="saleDate" column="sale_date"/>
+    </resultMap>
+
+    <!-- 매출 조회 -->
+    <select id="selectSaleById" parameterType="String" resultMap="salesResultMap">
+        SELECT * FROM sales WHERE sale_id = #{saleId}
+    </select>
+
+    <!-- 모든 매출 조회 -->
+    <select id="getAllSales" resultMap="salesResultMap">
+        SELECT * FROM sales
+    </select>
+
+    <!-- 매출 추가 -->
+    <insert id="insertSale" parameterType="kr.or.ddit.vo.SalesVO">
+        INSERT INTO sales (sale_id, product_id, quantity_sold, total_revenue, sale_date)
+        VALUES (#{saleId}, #{productId}, #{quantitySold}, #{totalRevenue}, #{saleDate})
+    </insert>
+
+    <!-- 매출 수정 -->
+    <update id="updateSale" parameterType="kr.or.ddit.vo.SalesVO">
+        UPDATE sales
+        SET product_id = #{productId}, quantity_sold = #{quantitySold}, total_revenue = #{totalRevenue}, sale_date = #{saleDate}
+        WHERE sale_id = #{saleId}
+    </update>
+
+    <!-- 매출 삭제 -->
+    <delete id="deleteSale" parameterType="String">
+        DELETE FROM sales WHERE sale_id = #{saleId}
+    </delete>
+
+</mapper>

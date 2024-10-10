@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+	<resultMap type="MemberVO" id="memberVo"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="memNo" column="mem_no" />
+		<result property="memId" column="mem_id" />
+		<result property="memPw" column="mem_pw" />
+		<result property="memName" column="mem_name" />
+		<result property="memBirth" column="mem_birth" />
+		<result property="memPhone" column="mem_phone" />
+		<result property="memRegdate" column="mem_regdate" />
+		<result property="memGender" column="mem_gender" />
+		<result property="memCode" column="mem_code" />
+		<result property="memState" column="mem_state" />
+		<result property="memMail" column="mem_mail" />
+		<result property="mngNo" column="mng_no" />
+		<result property="spotCode" column="spot_code" />
+		<result property="spotName" column="spot_name" />
+	</resultMap>
+
+
+	<resultMap type="spotVO" id="spotVO"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="spotCode" column="spot_code" />
+		<result property="spotName" column="spot_name" />
+		<result property="spotSite" column="spot_site" />
+		<result property="regNo" column="reg_no" />
+	</resultMap>
+
+	<resultMap type="ManageVo" id="ManageVo"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="mngNo" column="mng_no" />
+		<result property="memNo" column="mem_no" />
+		<result property="spotCode" column="spot_code" />
+	</resultMap>
+
+	<update id="withdraw">
+		UPDATE MEMBER
+		SET MEM_STATE = '2'
+		WHERE MEM_ID =
+		'${memId}'
+
+	</update>
+
+	<select id="pwCorrect" resultMap="memberVo"
+		parameterType="MemberVo">
+		SELECT MEM_PW FROM MEMBER
+		WHERE MEM_ID = '${memId}'
+	</select>
+
+	<update id="update">
+		UPDATE MEMBER
+		SET MEM_PW = '${memPw}'
+		,MEM_NAME =
+		'${memName}'
+		,MEM_MAIL = '${memMail}'
+		,MEM_PHONE =
+		'${memPhone}'
+		WHERE
+		MEM_ID = '${memId}'
+
+
+	</update>
+
+	<select id="findPw" resultMap="memberVo"
+		parameterType="MemberVo">
+		SELECT * FROM MEMBER
+		WHERE MEM_ID = '${memId}'
+		AND
+		MEM_NAME = '${memName}'
+		AND MEM_MAIL = '${memMail}'
+
+	</select>
+
+	<select id="findId" resultMap="memberVo"
+		parameterType="MemberVo">
+		SELECT MEM_ID FROM MEMBER
+		WHERE MEM_NAME = '${memName}'
+		AND MEM_MAIL = '${memMail}'
+
+	</select>
+
+	<select id="login" resultMap="memberVo" parameterType="MemberVo">
+		SELECT *
+		FROM MEMBER
+		WHERE MEM_ID = #{memId}
+		AND MEM_PW = #{memPw}
+		and
+		mem_code=#{memCode}
+	</select>
+
+	<insert id="join" parameterType="MemberVo">
+
+		INSERT INTO MEMBER
+		VALUES
+		((select nvl(max(mem_no),0)+1 from
+		member),#{memId},#{memPw},#{memName},#{memBirth},#{memPhone},sysdate,#{memGender},'1','1',#{memMail})
+
+
+	</insert>
+
+	<select id="selectMemNo" resultType="int"
+		parameterType="String">
+		select mem_no from member where mem_id=#{memId}
+	</select>
+
+
+	<select id="selectMembyId" resultMap="memberVo"
+		parameterType="String">
+		select * from member where mem_id=#{memId}
+	</select>
+
+
+	<select id="selectMem" resultMap="memberVo">
+		select * from member 
+		where mem_code=1 and mem_state=1
+	</select>
+
+	<insert id="insertManager" parameterType="MemberVo">
+		insert into member
+		values((select nvl(max(mem_no),0)+1 from member), #{memId},
+		#{memPw},#{memName},#{memBirth},#{memPhone},sysdate,#{memGender},2,1,#{memMail})
+	</insert>
+
+	<update id="updateManager" parameterType="MemberVo">
+		update member
+		set
+		mem_id=#{memId},
+		mem_pw=#{memPw},
+		mem_mail=#{memMail},
+		mem_phone=#{memPhone},
+		mem_name=#{memName},
+		mem_birth=#{memBirth},
+		mem_regdate=sysdate,
+		mem_gender=#{memGender}
+		where mem_no=#{memNo}
+	</update>
+
+	<select id="selectByNo" parameterType="int" resultMap="memberVo">
+		select *
+		from member where mem_no=#{memNo}
+	</select>
+
+	<select id="selSpot" resultMap="spotVO">
+		select * from spot
+	</select>
+
+	<insert id="manager" parameterType="ManageVo">
+		insert into manage
+		values((select nvl( max(mng_no),0)+1 from manage),#{memNo},#{spotCode})
+	</insert>
+
+	<update id="updateMng" parameterType="ManageVo">
+		UPDATE MANAGE
+		SET spot_code=#{spotCode}
+		WHERE mem_no=#{memNo}
+	</update>
+
+	<select id="selMng" parameterType="int" resultMap="ManageVo">
+		select * from manage mg, member m
+		where mg.mem_no=m.mem_no
+		and m.mem_no=#{memNo}
+	</select>
+	
+	<select id="selSpotMember" resultMap="memberVo">
+	SELECT
+		s.*, m.*, mg.*
+		FROM member m
+		JOIN manage mg ON m.mem_no = mg.mem_no
+		JOIN spot s ON mg.spot_code = s.spot_code
+	
+	</select>
+</mapper>

@@ -1,0 +1,16 @@
+package kr.or.ddit.vo;
+
+public class ScheduleVo {
+	private String schNo;
+	private String schDate;
+	private String movieStart;
+	private String movieEnd;
+	private String movieNo;
+	private String roomNum;
+	private String roomName;
+	private String totalSeats;
+	private String movieStartTime;
+	private String soldOutSeats;
+	
+
+}

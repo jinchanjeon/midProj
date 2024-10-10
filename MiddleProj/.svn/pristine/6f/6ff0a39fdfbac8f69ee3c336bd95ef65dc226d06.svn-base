@@ -1,0 +1,27 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%-- <%@ page import="kr.or.ddit.vo.SeatVo" %> --%>
+<%@ page import="java.util.List" %>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>좌석 선택</title>
+</head>
+<body>
+    <%
+        // request에서 값 가져오기
+        String movieNo = (String) request.getAttribute("movieNo"); 
+        String date = (String) request.getAttribute("date");
+        String spotCode = (String) request.getAttribute("spotCode");
+        String schNo = (String) request.getAttribute("scheduleNo"); // 'scheduleNo'로 수정
+    %>
+
+    <h1>영화: <%= movieNo %></h1>
+    <h2>날짜: <%= date %></h2>
+    <h2>극장: <%= spotCode %></h2>
+    <h2>스케줄 번호: <%= schNo %></h2>
+
+    <!-- 좌석 선택 UI 추가 -->
+
+</body>
+</html>

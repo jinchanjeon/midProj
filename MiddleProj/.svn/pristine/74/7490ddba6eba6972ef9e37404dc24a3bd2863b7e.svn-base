@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.ddit.dao.MovieMapper">
+
+<!-- MovieVo와 BoxofficeVo를 조합하여 매핑 -->
+<resultMap id="movieMap" type="MovieVO">
+    <result property="movieNo" column="movie_no" />
+    <result property="movieName" column="movie_name" />
+    <result property="rank" column="rank" />
+</resultMap>
+    
+	<resultMap type="BoxofficeVO" id="boxMap"> <!-- type은 mybatis-config에서 alias 한 것 -->
+        <result property="movieName" column="movie_name" />
+        <result property="rank" column="rank" />
+	</resultMap>
+
+	<!-- 박스오피스와 조인하여 랭크 순으로 영화 목록 가져오기 -->
+	 <select id="getMovieList" resultMap="movieMap">
+        SELECT m.movie_no, m.movie_name, b.rank
+        FROM movie m
+        JOIN boxoffice b
+          ON m.movie_name = b.movie_name
+        WHERE b.BOXOFFICE_DATE = TO_NUMBER(TO_CHAR(TRUNC(SYSDATE)-1, 'YYYYMMDD'))
+        ORDER BY b.rank
+    </select>
+
+</mapper>

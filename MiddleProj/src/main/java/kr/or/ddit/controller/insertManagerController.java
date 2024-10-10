@@ -1,0 +1,60 @@
+package kr.or.ddit.controller;
+
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.ddit.service.MemberServiceImpl;
+import kr.or.ddit.service.iMemberService;
+import kr.or.ddit.vo.ManageVo;
+import kr.or.ddit.vo.MemberVo;
+
+@WebServlet("/insertManager.do")
+public class insertManagerController extends HttpServlet{
+	iMemberService memberService = MemberServiceImpl.getInstance();
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	    String memId = req.getParameter("memId");
+	    String memPw = req.getParameter("memPw");
+	    String memName = req.getParameter("memName");
+	    String memBirth = req.getParameter("memBirth");
+	    String memPhone = req.getParameter("memPhone");
+	    String memGender = req.getParameter("memGender");
+	    String memMail = req.getParameter("memMail");
+	    String spotCode = req.getParameter("spotCode");
+	    System.out.println("memBirth: " + memBirth); 
+	    System.out.println("memId: " + memId);
+
+	    String[] parts = memBirth.split("-");
+	    if (parts.length == 3) {
+	        memBirth = parts[0].substring(2) + "/" + parts[1] + "/" + parts[2];
+	    }
+
+	    MemberVo member = new MemberVo();
+	    
+	    member.setMemId(memId);
+	    member.setMemPw(memPw);
+	    member.setMemName(memName);
+	    member.setMemBirth(memBirth);
+	    member.setMemPhone(memPhone);
+	    member.setMemGender(memGender);
+	    member.setMemMail(memMail);
+	    
+	    memberService.insertManager(member);
+	    
+	    ManageVo manager = new ManageVo();
+	    
+	    int memNo = memberService.selectMemNo(memId);
+	    
+	    manager.setMemNo(memNo);
+	    manager.setSpotCode(spotCode);
+	    memberService.manager(manager);
+	    
+	    resp.sendRedirect(req.getContextPath() + "/mypage.do");
+	}
+
+}

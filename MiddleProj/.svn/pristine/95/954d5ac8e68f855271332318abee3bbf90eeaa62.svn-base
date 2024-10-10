@@ -1,0 +1,19 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class MemberVo {
+
+	private int memNo;
+	private String memId;
+	private String memPw;
+	private String memName;
+	private String memBirth;
+	private String memPhone;
+	private String memRegdate;
+	private String memGender;
+	private int memCode;
+	private int memState;
+	private String memMail;
+}

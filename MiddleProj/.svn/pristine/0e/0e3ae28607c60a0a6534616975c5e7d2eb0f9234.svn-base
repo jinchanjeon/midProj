@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+	<resultMap type="MemberVO" id="memberVo"> <!-- type은 mybatis-config에서 alias 한 것 -->
+		<result property="memNo" column="mem_no" />
+		<result property="memId" column="mem_id" />
+		<result property="memPw" column="mem_pw" />
+		<result property="memName" column="mem_name" />
+		<result property="memBirth" column="mem_birth" />
+		<result property="memPhone" column="mem_phone" />
+		<result property="memRegdate" column="mem_regdate" />
+		<result property="memGender" column="mem_gender" />
+		<result property="memCode" column="mem_code" />
+		<result property="memState" column="mem_state" />
+		<result property="memMail" column="mem_mail" />
+	</resultMap>
+	<update id="withdraw">
+		UPDATE MEMBER
+		SET MEM_STATE = '2'
+		WHERE MEM_ID =
+		'${memId}'
+
+	</update>
+
+	<select id="pwCorrect" resultMap="memberVo"
+		parameterType="MemberVo">
+		SELECT MEM_PW FROM MEMBER
+		WHERE MEM_ID = '${memId}'
+	</select>
+
+	<update id="update">
+		UPDATE MEMBER
+		SET MEM_PW = '${memPw}'
+		,MEM_NAME = '${memName}'
+		,MEM_MAIL = '${memMail}'
+		,MEM_PHONE =
+		'${memPhone}'
+		WHERE MEM_ID = '${memId}'
+
+
+	</update>
+
+	<select id="findPw" resultMap="memberVo"
+		parameterType="MemberVo">
+		SELECT * FROM MEMBER
+		WHERE MEM_ID = '${memId}'
+		AND
+		MEM_NAME = '${memName}'
+		AND MEM_MAIL = '${memMail}'
+
+	</select>
+
+	<select id="findId" resultMap="memberVo"
+		parameterType="MemberVo">
+		SELECT MEM_ID FROM MEMBER
+		WHERE MEM_NAME = '${memName}'
+		AND MEM_MAIL = '${memMail}'
+
+	</select>
+
+	<select id="login" resultMap="memberVo" parameterType="MemberVo">
+		SELECT * FROM MEMBER
+		WHERE MEM_ID = #{memId}
+		AND MEM_PW = #{memPw}
+		and mem_code=#{memCode}
+	</select>
+
+	<insert id="join" parameterType="MemberVo">
+
+		INSERT INTO MEMBER
+		VALUES ((select nvl(max(mem_no),0)+1 from
+		member),#{memId},#{memPw},#{memName},#{memBirth},#{memPhone},sysdate,#{memGender},'1','1',#{memMail})
+
+
+	</insert>
+
+	<select id="selectMemNo" resultMap="memberVo"
+		parameterType="String">
+		select mem_no from member where mem_id=#{memId}
+	</select>
+
+
+	<select id="selectMembyId" resultMap="memberVo"
+		parameterType="String">
+		select * from member where mem_id=#{memId}
+	</select>
+
+
+	<select id="selectMem" resultMap="memberVo">
+		select * from member where mem_code=1 and mem_state=1
+
+	</select>
+
+
+
+
+</mapper>

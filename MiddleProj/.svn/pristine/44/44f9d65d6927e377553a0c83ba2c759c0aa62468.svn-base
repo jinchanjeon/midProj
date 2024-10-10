@@ -1,0 +1,25 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var='contextPath' value='${pageContext.request.contextPath}'></c:set>
+<%@page import="jakarta.servlet.ServletContext"%>
+<html>
+<head>
+    <title>Movie Schedule Management</title>
+</head>
+<style>
+body, html{
+background-color:black !important;
+}
+h1{
+color:white !important;
+}
+</style>
+<body>
+<%@include file= "../../includes/top.jsp"%>
+<section class="heading-page">
+    <h1>Movie Schedules</h1>
+    <!-- List of movie schedules -->
+    <a href="movieScheduleForm.jsp?action=add">Add New Schedule</a>
+    </section>
+</body>
+</html>
+    
