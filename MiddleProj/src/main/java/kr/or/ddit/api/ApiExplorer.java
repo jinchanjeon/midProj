@@ -9,6 +9,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -37,6 +43,7 @@ public class ApiExplorer {
 	// 모든 영화정보를 kmdb에서
 	// 상영중은 개봉시작일로부터 2주간
 
+	ExecutorService exe = Executors.newFixedThreadPool(30);
 	public void getKMDBAPI() throws Exception {
 		int totalCount = 0; // 총 데이터 수를 저장할 변수
 
@@ -115,9 +122,9 @@ public class ApiExplorer {
 				MovieVo movieNo = new MovieVo();
 				movieNo.setMovieNo(movieCode);
 
-//	            if(movieService.getMovie(movieNo)!=null) {
-//	            	continue;
-//	            }
+	            if(movieService.getMovie(movieNo)!=null) {
+	            	continue;
+	            }
 
 				String title = movie.get("title").getAsString();
 				if (title.contains("!HE") || title.contains("!HS")) {
@@ -252,8 +259,9 @@ public class ApiExplorer {
 				}
 				movieVo.setMovieLevel(level);
 
-				System.out.println("movieVO: " + movieVo);
-				movieService.insertMovie(movieVo);
+				/*
+				 * System.out.println("movieVO: " + movieVo); movieService.insertMovie(movieVo);
+				 */
 				 
 				 
 				 for (int k = 0; k < actors.size(); k++) {
@@ -349,6 +357,8 @@ public class ApiExplorer {
 						    }
 					}
 					
+				 ThreadJob threadJob = new ThreadJob(movieCode, movieVo, movieService);
+	                exe.execute(threadJob); 
 
 			}
 
@@ -356,4 +366,43 @@ public class ApiExplorer {
 
 	}
 
+}
+
+class ThreadJob extends Thread{
+	
+    private String movieCode;
+    private MovieVo movieVo;
+    private iMovieService movieService;
+    
+	  public ThreadJob(String movieCode, MovieVo movieVo, iMovieService movieService) {
+	        this.movieCode = movieCode;
+	        this.movieVo = movieVo;
+	        this.movieService = movieService;
+	    }
+	  
+	  @Override
+	    public void run() {
+	        try {
+	            movieService.insertMovie(movieVo);
+	            System.out.println("ThreadJob 실행: " + movieVo.getMovieName());
+	        } catch (Exception e) {
+	            System.err.println("ThreadJob 실행 중 오류 발생: " + movieVo.getMovieName() + ", " + e.getMessage());
+	            e.printStackTrace(); 
+	        }
+	    }
+	}
+
+class ApiExplorerJob implements Job {
+
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        try {
+            ApiExplorer apiExplorer = new ApiExplorer();
+            apiExplorer.getKMDBAPI();
+            System.out.println("성공적");
+        } catch (Exception e) {
+            System.err.println("쿼츠 실패 " + e.getMessage());
+            throw new JobExecutionException(e);
+        }
+    }
 }
